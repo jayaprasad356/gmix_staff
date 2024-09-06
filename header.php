@@ -176,6 +176,12 @@ $fn = new custom_functions;
                     </a>
                 </li>
                 <li class="treeview">
+                    <a href="addresses.php">
+                    <i class="fa fa-map-marker"></i>
+                    <span>Addresses</span>
+                    </a>
+                </li>
+                <li class="treeview">
                     <a href="create_orders.php">
                     <i class="fa fa-shopping-cart"></i>
                     <span>Create Orders</span>

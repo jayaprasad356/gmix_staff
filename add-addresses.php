@@ -25,13 +25,13 @@
 <?php include "header.php";?>
 <html>
 <head>
-<title>Add user | Update Data</title>
+<title>Add Addresses | Update Data</title>
 </head>
 </body>
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
 		<?php
-			include('public/add-users-form.php'); 
+			include('public/add-addresses-form.php'); 
 		?>
       </div><!-- /.content-wrapper -->
   </body>

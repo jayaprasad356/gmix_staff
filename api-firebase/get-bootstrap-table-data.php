@@ -271,7 +271,70 @@ $db->connect();
             $bulkData['rows'] = $rows;
             print_r(json_encode($bulkData));
         }
+        if (isset($_GET['table']) && $_GET['table'] == 'addresses') {
+            $offset = 0;
+            $limit = 10;
+            $where = '';
+            $sort = 'id';
+            $order = 'DESC';
         
+            if (isset($_GET['offset']))
+                $offset = $db->escapeString($_GET['offset']);
+            if (isset($_GET['limit']))
+                $limit = $db->escapeString($_GET['limit']);
+            if (isset($_GET['sort']))
+                $sort = $db->escapeString($_GET['sort']);
+            if (isset($_GET['order']))
+                $order = $db->escapeString($_GET['order']);
+        
+            if (isset($_GET['search']) && !empty($_GET['search'])) {
+                $search = $db->escapeString($_GET['search']);
+                $where .= " AND (l.id LIKE '%" . $search . "%' OR l.first_name LIKE '%" . $search . "%' OR l.last_name LIKE '%" . $search . "%' OR l.mobile LIKE '%" . $search . "%' OR l.alternate_mobile LIKE '%" . $search . "%' OR l.door_no LIKE '%" . $search . "%' OR l.street_name LIKE '%" . $search . "%' OR l.city LIKE '%" . $search . "%' OR l.pincode LIKE '%" . $search . "%' OR l.state LIKE '%" . $search . "%' OR l.landmark LIKE '%" . $search . "%' OR u.name LIKE '%" . $search . "%')";
+            }
+        
+            $join = "LEFT JOIN `users` u ON l.user_id = u.id WHERE l.id IS NOT NULL " . $where;
+        
+            $sql = "SELECT COUNT(l.id) AS total FROM `addresses` l " . $join;
+            $db->sql($sql);
+            $res = $db->getResult();
+            foreach ($res as $row) {
+                $total = $row['total'];
+            }
+        
+            $sql = "SELECT l.id AS id, l.*, u.name FROM `addresses` l " . $join . " ORDER BY $sort $order LIMIT $offset, $limit";
+            $db->sql($sql);
+            $res = $db->getResult();
+        
+            $bulkData = array();
+            $bulkData['total'] = $total;
+        
+            $rows = array();
+        
+            foreach ($res as $row) {
+        
+                $operate = '<a href="edit-addresses.php?id=' . $row['id'] . '"><i class="fa fa-edit"></i>Edit</a>';
+                $operate .= ' <a class="text text-danger" href="delete-addresses.php?id=' . $row['id'] . '"><i class="fa fa-trash"></i>Delete</a>';
+        
+                $tempRow = array();
+                $tempRow['id'] = $row['id'];
+                $tempRow['name'] = $row['name'];
+                $tempRow['first_name'] = $row['first_name'];
+                $tempRow['last_name'] = $row['last_name'];
+                $tempRow['mobile'] = $row['mobile'];
+                $tempRow['alternate_mobile'] = $row['alternate_mobile'];
+                $tempRow['door_no'] = $row['door_no'];
+                $tempRow['street_name'] = $row['street_name'];
+                $tempRow['city'] = $row['city'];
+                $tempRow['pincode'] = $row['pincode'];
+                $tempRow['state'] = $row['state'];
+                $tempRow['landmark'] = $row['landmark'];
+                $tempRow['operate'] = $operate;
+                $rows[] = $tempRow;
+            }
+        
+            $bulkData['rows'] = $rows;
+            print_r(json_encode($bulkData));
+        }
       
 $db->disconnect();
 
