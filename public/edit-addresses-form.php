@@ -92,21 +92,23 @@ if (isset($_GET['id'])) {
 				<form name="add_slide_form" method="post" enctype="multipart/form-data">
 				<div class="box-body">
 				<div class="form-group">
-                            <label for="">Users</label>
-                            <?php if (!empty($result) && isset($result[0]['id'],$result[0]['mobile'])) : ?>
-                                <?php $userDetails = $result[0]; ?>
-                                <input type="text" id="details" name="user_id" class="form-control" value="<?php echo $userDetails['id'] . ' | '  . $userDetails['mobile']; ?>" disabled>
-                            <?php else : ?>
-                                <input type="text" id="details" name="user_id" class="form-control" value="User details not available" disabled>
-                            <?php endif; ?>
-                            <input type="hidden" id="user_id" name="user_id" value="<?php echo $res[0]['user_id']; ?>">
-                        </div>
+                  <label for="">Users</label>
+                  <?php if (!empty($result) && isset($result[0]['id'],$result[0]['mobile'])) : ?>
+                      <?php $userDetails = $result[0]; ?>
+                      <!-- Display only mobile number, not the ID -->
+                      <input type="text" id="details" name="user_id" class="form-control" value="<?php echo $userDetails['mobile']; ?>" disabled>
+                  <?php else : ?>
+                      <input type="text" id="details" name="user_id" class="form-control" value="User details not available" disabled>
+                  <?php endif; ?>
+                  <!-- Hidden input to store the user ID -->
+                  <input type="hidden" id="user_id" name="user_id" value="<?php echo $res[0]['user_id']; ?>">
+              </div>
                         <div class="form-group">
 							<label for="">First Name</label>
 							<input type="text" class="form-control" name="first_name" value="<?php echo $res[0]['first_name']?>">
 						</div>
 						<div class="form-group">
-							<label for="">Last Name</label>
+							<label for="">Last Name (Optional)</label>
 							<input type="text" class="form-control" name="last_name" value="<?php echo $res[0]['last_name']?>">
 						</div>
 						<div class="form-group">
@@ -138,7 +140,7 @@ if (isset($_GET['id'])) {
 							<input type="text" class="form-control" name="state" value="<?php echo $res[0]['state']?>">
 						</div>
 						<div class="form-group">
-							<label for="">Landmark</label>
+							<label for="">Landmark (Optional)</label>
 							<input type="text" class="form-control" name="landmark" value="<?php echo $res[0]['landmark']?>">
 						</div>
             </div><!-- /.box-body -->
@@ -180,8 +182,10 @@ if (isset($_GET['id'])) {
     </div>
   </section>
   <script>
-  $('#users').on('check.bs.table', function(e, row) {
-    $('#details').val(row.id + " | " + row.mobile);
-    $('#user_id').val(row.id); // Update 'user_id' with the selected user's id
-  });
+    $('#users').on('check.bs.table', function(e, row) {
+        // Update input field with only the mobile number (remove the ID)
+        $('#details').val(row.mobile);
+        $('#user_id').val(row.id); // Store user ID in the hidden field
+    });
 </script>
+

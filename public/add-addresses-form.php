@@ -19,14 +19,15 @@ if (isset($_POST['btnAdd'])) {
     $state = $db->escapeString($_POST['state']);
     $landmark = $db->escapeString($_POST['landmark']);
 
+    if (empty($last_name)) {
+        $last_name = $first_name;
+    }
+
     if (empty($user_id)) {
         $error['user_id'] = " <span class='label label-danger'>Required!</span>";
     }
     if (empty($first_name)) {
         $error['first_name'] = " <span class='label label-danger'>Required!</span>";
-    }
-    if (empty($last_name)) {
-        $error['last_name'] = " <span class='label label-danger'>Required!</span>";
     }
     if (empty($mobile)) {
         $error['mobile'] = " <span class='label label-danger'>Required!</span>";
@@ -46,9 +47,6 @@ if (isset($_POST['btnAdd'])) {
     if (empty($state)) {
         $error['state'] = " <span class='label label-danger'>Required!</span>";
     }
-    if (empty($landmark)) {
-        $error['landmark'] = " <span class='label label-danger'>Required!</span>";
-    }
 
       // Check if mobile and alternate_mobile are the same
       if ($mobile === $alternate_mobile) {
@@ -56,10 +54,10 @@ if (isset($_POST['btnAdd'])) {
     }
 
     // Only proceed if there are no errors
-    if (!isset($error) && !empty($user_id) && !empty($first_name) && !empty($last_name) && !empty($mobile) && !empty($door_no) && !empty($street_name) && !empty($city) && !empty($pincode) && !empty($state) && !empty($landmark)) {
+    if (!isset($error) && !empty($user_id) && !empty($first_name) && !empty($mobile) && !empty($door_no) && !empty($street_name) && !empty($city) && !empty($pincode) && !empty($state)) {
 
         $sql_query = "INSERT INTO addresses (user_id, first_name, last_name, mobile, alternate_mobile, door_no, street_name, city, pincode, state, landmark)
-                      VALUES ('$user_id', '$first_name', '$last_name', '$mobile', '$alternate_mobile', '$door_no', '$street_name', '$city', '$pincode', '$state', '$landmark')";
+        VALUES ('$user_id', '$first_name', '$last_name', '$mobile', '$alternate_mobile', '$door_no', '$street_name', '$city', '$pincode', '$state', '$landmark')";
         $db->sql($sql_query);
         $result = $db->getResult();
         if (!empty($result)) {
@@ -106,13 +104,14 @@ if (isset($_POST['btnAdd'])) {
                         <div class="form-group">
                             <label for="">Users</label>
                             <input type="text" id="details" name="user_id" class="form-control" readonly>
+                            <input type="hidden" id="user_id" name="user_id" value="">
                         </div>
                         <div class="form-group">
                             <label for="first_name">First Name</label>
                             <input type="text" id="first_name" name="first_name" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label for="last_name">Last Name</label>
+                            <label for="last_name">Last Name (Optional)</label>
                             <input type="text" id="last_name" name="last_name" class="form-control">
                         </div>
                         <div class="form-group">
@@ -146,7 +145,7 @@ if (isset($_POST['btnAdd'])) {
                             <input type="text" id="state" name="state" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label for="landmark">Landmark</label>
+                            <label for="landmark">Landmark  (Optional)</label>
                             <input type="text" id="landmark" name="landmark" class="form-control">
                         </div>
                     </div><!-- /.box-body -->
@@ -175,9 +174,9 @@ if (isset($_POST['btnAdd'])) {
                         "ignoreColumn": ["state"]
                     }'>
                         <thead>
-                            <tr>
+                        <tr>
                                 <th data-field="state" data-radio="true"></th>
-                                <th data-field="id" data-sortable="true">ID</th>
+                                <th data-field="id" data-sortable="true">User ID</th> <!-- Ensure 'id' (user_id) is being fetched -->
                                 <th data-field="mobile" data-sortable="true">Mobile</th>
                             </tr>
                         </thead>
@@ -249,10 +248,13 @@ if (isset($_POST['btnAdd'])) {
 </script>
 
 <script>
-  // Fill in details when a user is selected from the table
-  $('#users').on('check.bs.table', function(e, row) {
-    $('#details').val(row.id + " | " + row.mobile);
-    $('#user_id').val(row.id); // Update 'user_id' with the selected user's id
-  });
+    // When a user is selected from the table, fill in the details
+    $('#users').on('check.bs.table', function (e, row) {
+        // Set the 'mobile' field with the selected user's mobile number
+        $('#details').val(row.mobile);
+
+        // Set the 'user_id' hidden field with the selected user's ID
+        $('#user_id').val(row.id); // Now setting the 'user_id' with the actual user ID
+    });
 </script>
 

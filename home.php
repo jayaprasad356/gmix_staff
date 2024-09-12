@@ -31,7 +31,7 @@ include "header.php";
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>5PL- Dashboard</title>
+    <title>Gmix Staff- Dashboard</title>
 </head>
 
 <body>

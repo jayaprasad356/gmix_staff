@@ -167,11 +167,11 @@ ob_end_flush();
                             <label class="col-md-4 control-label">Payment Mode:</label>
                             <div class="col-md-5">
                                 <div id="payment_mode" class="btn-group pull-right">
-                                    <label class="btn btn-primary" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default" required>
-                                        <input type="radio" name="payment_mode" value="Prepaid"> Prepaid
+                                    <label class="btn btn-primary" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default" >
+                                        <input type="radio" name="payment_mode" value="Prepaid" required> Prepaid
                                     </label>
-                                    <label class="btn btn-success" data-toggle-class="btn-default" data-toggle-passive-class="btn-default" required>
-                                        <input type="radio" name="payment_mode" value="COD"> COD
+                                    <label class="btn btn-success" data-toggle-class="btn-default" data-toggle-passive-class="btn-default" >
+                                        <input type="radio" name="payment_mode" value="COD" required> COD
                                     </label>
                                 </div>
                             </div>

@@ -8,22 +8,28 @@ $db->sql("SET NAMES 'utf8'");
 if (isset($_POST['mobile'])) {
     $mobile = $db->escapeString($_POST['mobile']);
 
-    // Check if the mobile number exists in the users table
-    $check_user_query = "SELECT * FROM users WHERE mobile = '$mobile'";
-    $db->sql($check_user_query);
-    $userData = $db->getResult();
+    // Check if the mobile number is exactly 10 digits
+    if (preg_match('/^[0-9]{10}$/', $mobile)) {
+        // Check if the mobile number exists in the users table
+        $check_user_query = "SELECT * FROM users WHERE mobile = '$mobile'";
+        $db->sql($check_user_query);
+        $userData = $db->getResult();
 
-    if (!empty($userData)) {
-        // Mobile number already exists in users table
-        echo "Mobile number already registered";
-    } else {
-        // Mobile number does not exist in users table, insert it
-        $insert_user_query = "INSERT INTO users (mobile) VALUES ('$mobile')";
-        if($db->sql($insert_user_query)){
-            echo "Mobile number inserted successfully";
+        if (!empty($userData)) {
+            // Mobile number already exists in users table
+            echo "Mobile number already registered";
         } else {
-            echo "Error inserting mobile number";
+            // Mobile number does not exist in users table, insert it
+            $insert_user_query = "INSERT INTO users (mobile) VALUES ('$mobile')";
+            if ($db->sql($insert_user_query)) {
+                echo "Mobile number inserted successfully";
+            } else {
+                echo "Error inserting mobile number";
+            }
         }
+    } else {
+        // Mobile number is not valid
+        echo "Please enter a valid 10-digit mobile number";
     }
 }
 ?>
