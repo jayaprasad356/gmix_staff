@@ -134,15 +134,15 @@ if (isset($_POST['btnAdd'])) {
                         </div>
                         <div class="form-group">
                             <label for="city">City</label>
-                            <input type="text" id="city" name="city" class="form-control">
+                            <input type="text" id="city" name="city" class="form-control" readonly>
                         </div>
                         <div class="form-group">
                             <label for="pincode">Pincode</label>
-                            <input type="text" id="pincode" name="pincode" class="form-control">
+                            <input type="text" id="pincode" name="pincode" class="form-control" oninput="fetchStateAndCity()">
                         </div>
                         <div class="form-group">
                             <label for="state">State</label>
-                            <input type="text" id="state" name="state" class="form-control">
+                            <input type="text" id="state" name="state" class="form-control" readonly>
                         </div>
                         <div class="form-group">
                             <label for="landmark">Landmark  (Optional)</label>
@@ -220,6 +220,38 @@ if (isset($_POST['btnAdd'])) {
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
+   function fetchStateAndCity() {
+    var pincode = $('#pincode').val();
+
+    if (pincode.length === 6) {
+        $('#state, #city').val('Fetching...'); // Show loading text
+
+        $.ajax({
+            url: 'fetch_state_city.php',
+            method: 'POST',
+            data: { pincode: pincode },
+            success: function (response) {
+                var data = JSON.parse(response);
+                console.log(data);  // Add this line to debug the response
+
+                if (data.status === 'success') {
+                    $('#state').val(data.state);
+                    $('#city').val(data.city);
+                } else {
+                    alert('Invalid Pincode or no data found.');
+                    $('#state, #city').val(''); // Clear fields on error
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                $('#state, #city').val(''); // Clear fields on error
+            }
+        });
+    }
+}
+
+</script>
+<script>
     $(document).ready(function () {
         $('#submitUser').click(function () {
             // Get the mobile input value
@@ -257,4 +289,3 @@ if (isset($_POST['btnAdd'])) {
         $('#user_id').val(row.id); // Now setting the 'user_id' with the actual user ID
     });
 </script>
-
