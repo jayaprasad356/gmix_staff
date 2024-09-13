@@ -93,8 +93,34 @@ if (isset($_POST['btnAdd'])) {
 </section>
 <section class="content">
     <div class="row">
-        <div class="col-md-6">
-            <!-- general form elements -->
+        <!-- Users List -->
+        <div class="col-md-6 col-xs-12 order-md-2 order-xs-1">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Users</h3>
+                    <button type="button" class="btn btn-sm btn-default pull-right" data-toggle="modal" data-target="#addUserModal">
+                        <i class="fa fa-plus-square"></i> Add Users
+                    </button>
+                </div>
+                <div class="box-body table-responsive">
+                    <table class="table table-hover" data-toggle="table" id="users" data-url="api-firebase/get-bootstrap-table-data.php?table=my_customers" data-click-to-select="true" data-side-pagination="server" data-pagination="true" data-page-list="[5, 10, 20, 50, 100, 200]" data-search="true" data-trim-on-search="false" data-show-refresh="true" data-show-columns="true" data-sort-name="id" data-sort-order="desc" data-mobile-responsive="true" data-toolbar="#toolbar" data-show-export="true" data-maintain-selected="true" data-export-types='["txt","excel"]' data-export-options='{
+                        "fileName": "users-list-<?= date('d-m-y') ?>",
+                        "ignoreColumn": ["state"]
+                    }'>
+                        <thead>
+                        <tr>
+                            <th data-field="state" data-radio="true"></th>
+                            <th data-field="id" data-sortable="true">User ID</th>
+                            <th data-field="mobile" data-sortable="true">Mobile</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Address Form -->
+        <div class="col-md-6 col-xs-12 order-md-1 order-xs-2">
             <div class="box box-primary">
                 <div class="box-header with-border"></div>
                 <!-- /.box-header -->
@@ -145,7 +171,7 @@ if (isset($_POST['btnAdd'])) {
                             <input type="text" id="state" name="state" class="form-control" readonly>
                         </div>
                         <div class="form-group">
-                            <label for="landmark">Landmark  (Optional)</label>
+                            <label for="landmark">Landmark (Optional)</label>
                             <input type="text" id="landmark" name="landmark" class="form-control">
                         </div>
                     </div><!-- /.box-body -->
@@ -159,34 +185,10 @@ if (isset($_POST['btnAdd'])) {
                 </form>
             </div><!-- /.box -->
         </div>
-        <!-- Left col -->
-        <div class="col-md-6">
-            <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title">Users</h3>
-                    <button type="button" class="btn btn-sm btn-default pull-right" data-toggle="modal" data-target="#addUserModal">
-                        <i class="fa fa-plus-square"></i> Add Users
-                    </button>
-                </div>
-                <div class="box-body table-responsive">
-                    <table class="table table-hover" data-toggle="table" id="users" data-toggle="table" data-url="api-firebase/get-bootstrap-table-data.php?table=my_customers" data-click-to-select="true" data-side-pagination="server" data-pagination="true" data-page-list="[5, 10, 20, 50, 100, 200]" data-search="true" data-trim-on-search="false" data-show-refresh="true" data-show-columns="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toolbar="#toolbar" data-show-export="true" data-maintain-selected="true" data-export-types='["txt","excel"]' data-export-options='{
-                        "fileName": "users-list-<?= date('d-m-y') ?>",
-                        "ignoreColumn": ["state"]
-                    }'>
-                        <thead>
-                        <tr>
-                                <th data-field="state" data-radio="true"></th>
-                                <th data-field="id" data-sortable="true">User ID</th> <!-- Ensure 'id' (user_id) is being fetched -->
-                                <th data-field="mobile" data-sortable="true">Mobile</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="separator"> </div>
-    </div>
+    </div><!-- /.row -->
 </section>
+
+
 
 <!-- Bootstrap Modal for Adding Users -->
 <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true" data-backdrop="static">
@@ -253,30 +255,30 @@ if (isset($_POST['btnAdd'])) {
 </script>
 <script>
     $(document).ready(function () {
-        $('#submitUser').click(function () {
-            // Get the mobile input value
-            var mobile = $('#modalMobile').val();
+    $('#submitUser').click(function () {
+        var mobile = $('#modalMobile').val();
+        $('#modalMessage').removeClass('d-none alert-success alert-danger').text('');
 
-            // Clear previous messages
-            $('#modalMessage').removeClass('d-none alert-success alert-danger').text('');
-
-            $.ajax({
-                url: 'add_user.php', // Update with the actual PHP file URL
-                method: 'POST',
-                data: { mobile: mobile },
-                success: function (response) {
-                    if (response.includes('successfully')) {
-                        $('#modalMessage').addClass('alert-success').text(response).removeClass('d-none');
-                    } else {
-                        $('#modalMessage').addClass('alert-danger').text(response).removeClass('d-none');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    $('#modalMessage').addClass('alert-danger').text('An error occurred: ' + error).removeClass('d-none');
+        $.ajax({
+            url: 'add_user.php',
+            method: 'POST',
+            data: { mobile: mobile },
+            success: function (response) {
+                if (response.includes('successfully')) {
+                    $('#modalMessage').addClass('alert-success').text(response).removeClass('d-none');
+                    $('#users').bootstrapTable('refresh'); // Refresh the table data
+                    $('#addUserModal').modal('hide'); // Hide the modal
+                } else {
+                    $('#modalMessage').addClass('alert-danger').text(response).removeClass('d-none');
                 }
-            });
+            },
+            error: function (xhr, status, error) {
+                $('#modalMessage').addClass('alert-danger').text('An error occurred: ' + error).removeClass('d-none');
+            }
         });
     });
+});
+
 </script>
 
 <script>
