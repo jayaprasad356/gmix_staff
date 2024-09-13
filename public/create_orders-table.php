@@ -117,7 +117,7 @@ ob_end_flush();
 
 <section class="content">
     <div class="row">
-        <div class="col-xs-6">
+        <div class="col-md-6">
             <div class="box">
                 <div class="box-body">
                     <form id="customer_form" method="POST" action="#" class="form-horizontal">

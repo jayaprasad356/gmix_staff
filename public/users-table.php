@@ -16,7 +16,6 @@
                         }'>
                             <thead>
                                 <tr>
-                                    <th data-field="operate" data-events="actionEvents">Action</th>
                                     <th data-field="id" data-sortable="true">ID</th>
                                     <th data-field="mobile" data-sortable="true">Mobile</th>
                                     <th data-field="take" data-sortable="actionEvents">Take</th>

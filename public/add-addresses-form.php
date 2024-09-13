@@ -160,7 +160,7 @@ if (isset($_POST['btnAdd'])) {
             </div><!-- /.box -->
         </div>
         <!-- Left col -->
-        <div class="col-xs-6">
+        <div class="col-md-6">
             <div class="box">
                 <div class="box-header">
                     <h3 class="box-title">Users</h3>
