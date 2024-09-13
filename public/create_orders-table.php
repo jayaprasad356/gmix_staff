@@ -76,10 +76,11 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
 
     // Current date for ordered_date
     $ordered_date = date('Y-m-d H:i:s');
+    $created_at = date('Y-m-d H:i:s');
 
     // Insert the order into the orders table
-    $sql_query = "INSERT INTO orders (user_id, address_id, product_id, payment_mode, delivery_charges, total_price, live_tracking, ordered_date, price) 
-                           VALUES ('$user_id', '$address_id', '$product_id', '$payment_mode', '$delivery_charges', '$total_price', '$live_tracking', '$ordered_date', '$price')";
+    $sql_query = "INSERT INTO orders (user_id, address_id, product_id, payment_mode, delivery_charges, total_price, live_tracking, ordered_date, price,created_at) 
+                           VALUES ('$user_id', '$address_id', '$product_id', '$payment_mode', '$delivery_charges', '$total_price', '$live_tracking', '$ordered_date', '$price','$created_at')";
     $db->sql($sql_query);
     $result = $db->getResult();
     if (!empty($result)) {
