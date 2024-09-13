@@ -6,8 +6,6 @@ $db->connect();
 
 if (isset($_POST['mobile'])) {
     $mobile = $db->escapeString($_POST['mobile']);
-
-    // Check if the mobile number exists in the users table
     $query = "SELECT id FROM users WHERE mobile = '$mobile'";
     $db->sql($query);
     $user_result = $db->getResult();

@@ -289,10 +289,10 @@ $db->connect();
         
             if (isset($_GET['search']) && !empty($_GET['search'])) {
                 $search = $db->escapeString($_GET['search']);
-                $where .= " AND (l.id LIKE '%" . $search . "%' OR l.first_name LIKE '%" . $search . "%' OR l.mobile LIKE '%" . $search . "%' OR  l.pincode LIKE '%" . $search . "%' OR  u.mobile LIKE '%" . $search . "%')";
+                $where .= " AND (l.id LIKE '%" . $search . "%' OR u.mobile LIKE '%" . $search . "%')";
             }
         
-            $join = "LEFT JOIN `users` u ON l.user_id = u.id WHERE l.id IS NOT NULL " . $where;
+            $join = "LEFT JOIN `users` u ON l.user_id = u.id WHERE l.id IS NOT NULL AND u.staff_id = {$_SESSION['id']} " . $where;
         
             $sql = "SELECT COUNT(l.id) AS total FROM `addresses` l " . $join;
             $db->sql($sql);
@@ -300,7 +300,7 @@ $db->connect();
             foreach ($res as $row) {
                 $total = $row['total'];
             }
-        
+
             $sql = "SELECT l.id AS id, l.*, u.name, u.mobile as user_mobile FROM `addresses` l " . $join . " ORDER BY $sort $order LIMIT $offset, $limit";
             $db->sql($sql);
             $res = $db->getResult();
