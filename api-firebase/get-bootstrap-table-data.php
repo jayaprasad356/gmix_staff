@@ -289,7 +289,7 @@ $db->connect();
         
             if (isset($_GET['search']) && !empty($_GET['search'])) {
                 $search = $db->escapeString($_GET['search']);
-                $where .= " AND (l.id LIKE '%" . $search . "%' OR l.first_name LIKE '%" . $search . "%' OR l.last_name LIKE '%" . $search . "%' OR l.mobile LIKE '%" . $search . "%' OR l.alternate_mobile LIKE '%" . $search . "%' OR l.door_no LIKE '%" . $search . "%' OR l.street_name LIKE '%" . $search . "%' OR l.city LIKE '%" . $search . "%' OR l.pincode LIKE '%" . $search . "%' OR l.state LIKE '%" . $search . "%' OR l.landmark LIKE '%" . $search . "%' OR u.name LIKE '%" . $search . "%')";
+                $where .= " AND (l.id LIKE '%" . $search . "%' OR l.first_name LIKE '%" . $search . "%' OR l.mobile LIKE '%" . $search . "%' OR  l.pincode LIKE '%" . $search . "%' OR  u.mobile LIKE '%" . $search . "%')";
             }
         
             $join = "LEFT JOIN `users` u ON l.user_id = u.id WHERE l.id IS NOT NULL " . $where;
@@ -301,7 +301,7 @@ $db->connect();
                 $total = $row['total'];
             }
         
-            $sql = "SELECT l.id AS id, l.*, u.name FROM `addresses` l " . $join . " ORDER BY $sort $order LIMIT $offset, $limit";
+            $sql = "SELECT l.id AS id, l.*, u.name, u.mobile as user_mobile FROM `addresses` l " . $join . " ORDER BY $sort $order LIMIT $offset, $limit";
             $db->sql($sql);
             $res = $db->getResult();
         
@@ -317,7 +317,7 @@ $db->connect();
         
                 $tempRow = array();
                 $tempRow['id'] = $row['id'];
-                $tempRow['name'] = $row['name'];
+                $tempRow['user_mobile'] = $row['user_mobile'];
                 $tempRow['first_name'] = $row['first_name'];
                 $tempRow['last_name'] = $row['last_name'];
                 $tempRow['mobile'] = $row['mobile'];

@@ -20,6 +20,7 @@
                                 <tr>
                                     <th data-field="operate" data-events="actionEvents">Action</th>
                                     <th data-field="id" data-sortable="true">ID</th>
+                                    <th data-field="user_mobile" data-sortable="true">User Mobile</th>
                                     <th data-field="first_name" data-sortable="true">First Name</th>
                                     <th data-field="last_name" data-sortable="true">Last Name</th>
                                     <th data-field="mobile" data-sortable="true">Mobile</th>
