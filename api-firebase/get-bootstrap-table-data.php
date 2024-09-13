@@ -313,7 +313,7 @@ $db->connect();
             foreach ($res as $row) {
         
                 $operate = '<a href="edit-addresses.php?id=' . $row['id'] . '"><i class="fa fa-edit"></i>Edit</a>';
-                $operate .= ' <a class="text text-danger" href="delete-addresses.php?id=' . $row['id'] . '"><i class="fa fa-trash"></i>Delete</a>';
+               // $operate .= ' <a class="text text-danger" href="delete-addresses.php?id=' . $row['id'] . '"><i class="fa fa-trash"></i>Delete</a>';
         
                 $tempRow = array();
                 $tempRow['id'] = $row['id'];

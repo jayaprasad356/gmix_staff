@@ -7,6 +7,7 @@ $db->sql("SET NAMES 'utf8'");
 
 if (isset($_POST['mobile'])) {
     $mobile = $db->escapeString($_POST['mobile']);
+    $created_at = date('Y-m-d H:i:s'); // Get the current date and time
 
     // Check if the mobile number is exactly 10 digits
     if (preg_match('/^[0-9]{10}$/', $mobile)) {
@@ -21,7 +22,7 @@ if (isset($_POST['mobile'])) {
         } else {
             $staffID = $_SESSION['id'];
             // Mobile number does not exist in users table, insert it
-            $insert_user_query = "INSERT INTO users (mobile,staff_id) VALUES ('$mobile','$staffID')";
+            $insert_user_query = "INSERT INTO users (mobile, staff_id, created_at) VALUES ('$mobile', '$staffID', '$created_at')";
             if ($db->sql($insert_user_query)) {
                 echo "Mobile number inserted successfully";
             } else {
