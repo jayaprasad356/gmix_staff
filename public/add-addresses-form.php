@@ -134,7 +134,7 @@ if (isset($_POST['btnAdd'])) {
                         </div>
                         <div class="form-group">
                             <label for="city">City</label>
-                            <input type="text" id="city" name="city" class="form-control" readonly>
+                            <input type="text" id="city" name="city" class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="pincode">Pincode</label>
@@ -169,7 +169,7 @@ if (isset($_POST['btnAdd'])) {
                     </button>
                 </div>
                 <div class="box-body table-responsive">
-                    <table class="table table-hover" data-toggle="table" id="users" data-toggle="table" data-url="api-firebase/get-bootstrap-table-data.php?table=users" data-click-to-select="true" data-side-pagination="server" data-pagination="true" data-page-list="[5, 10, 20, 50, 100, 200]" data-search="true" data-trim-on-search="false" data-show-refresh="true" data-show-columns="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toolbar="#toolbar" data-show-export="true" data-maintain-selected="true" data-export-types='["txt","excel"]' data-export-options='{
+                    <table class="table table-hover" data-toggle="table" id="users" data-toggle="table" data-url="api-firebase/get-bootstrap-table-data.php?table=my_customers" data-click-to-select="true" data-side-pagination="server" data-pagination="true" data-page-list="[5, 10, 20, 50, 100, 200]" data-search="true" data-trim-on-search="false" data-show-refresh="true" data-show-columns="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toolbar="#toolbar" data-show-export="true" data-maintain-selected="true" data-export-types='["txt","excel"]' data-export-options='{
                         "fileName": "users-list-<?= date('d-m-y') ?>",
                         "ignoreColumn": ["state"]
                     }'>
