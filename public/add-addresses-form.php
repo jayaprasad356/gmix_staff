@@ -160,7 +160,7 @@ if (isset($_POST['btnAdd'])) {
                         </div>
                         <div class="form-group">
                             <label for="city">City</label>
-                            <input type="text" id="city" name="city" class="form-control">
+                            <input type="text" id="city" name="city" class="form-control" readonly>
                         </div>
                         <div class="form-group">
                             <label for="pincode">Pincode</label>

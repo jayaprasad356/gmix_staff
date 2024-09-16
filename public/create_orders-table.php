@@ -6,6 +6,10 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 include_once('includes/crud.php');
+include_once('includes/functions.php');
+$function = new functions;
+include_once('includes/custom-functions.php');
+$fn = new custom_functions;
 
 $db = new Database();
 $db->connect();
@@ -16,6 +20,51 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
     $address_id = $db->escapeString($_POST['address_id']);
     $product_id = $db->escapeString($_POST['product_id']);
     $payment_mode = $db->escapeString($_POST['payment_mode']);
+
+    // Validate and process the chat_conversation image upload (mandatory)
+    if (isset($_FILES['chat_conversation']) && $_FILES['chat_conversation']['size'] > 0 && $_FILES['chat_conversation']['error'] == 0) {
+        $extension = pathinfo($_FILES["chat_conversation"]["name"], PATHINFO_EXTENSION);
+        $result = $fn->validate_image($_FILES["chat_conversation"]);
+        $target_path = 'upload/images/';
+        $chat_conversation_image = microtime(true) . '.' . strtolower($extension);
+        $chat_conversation_full_path = $target_path . $chat_conversation_image;
+
+        if (!move_uploaded_file($_FILES["chat_conversation"]["tmp_name"], $chat_conversation_full_path)) {
+            echo '<p class="alert alert-danger">Cannot upload chat conversation image.</p>';
+            return false;
+            exit();
+        }
+    } else {
+        // If chat_conversation image is not provided, show an error
+        $_SESSION['error_message'] = "Chat conversation image is mandatory!";
+        header('Location: create_orders.php');
+        exit;
+    }
+
+    // Validate and process the payment_image upload (optional if prepaid)
+    if ($payment_mode == 'Prepaid') {
+        if (isset($_FILES['payment_image']) && $_FILES['payment_image']['size'] > 0 && $_FILES['payment_image']['error'] == 0) {
+            $extension = pathinfo($_FILES["payment_image"]["name"], PATHINFO_EXTENSION);
+            $result = $fn->validate_image($_FILES["payment_image"]);
+            $target_path = 'upload/images/';
+            $payment_image = microtime(true) . '.' . strtolower($extension);
+            $payment_image_full_path = $target_path . $payment_image;
+
+            if (!move_uploaded_file($_FILES["payment_image"]["tmp_name"], $payment_image_full_path)) {
+                echo '<p class="alert alert-danger">Cannot upload payment image.</p>';
+                return false;
+                exit();
+            }
+        } else {
+            // If prepaid and payment_image is missing, show an error
+            $_SESSION['error_message'] = "Payment image is mandatory for prepaid orders!";
+            header('Location: create_orders.php');
+            exit;
+        }
+    } else {
+        // If payment_mode is COD, set payment_image as an empty string
+        $payment_image_full_path = '';
+    }
 
     // Query to check if the mobile number exists in the users table
     $query = "SELECT id FROM users WHERE mobile = '$mobile'";
@@ -30,7 +79,6 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
         header('Location: create_orders.php');
         exit;
     }
-
     // Fetch addresses associated with the user_id from the addresses table
     $sql = "SELECT id, first_name, door_no, street_name, state, city, pincode FROM addresses WHERE user_id = '$user_id'";
     $db->sql($sql);
@@ -77,10 +125,10 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
     // Current date for ordered_date
     $ordered_date = date('Y-m-d H:i:s');
     $created_at = date('Y-m-d H:i:s');
-
+    $status = ($payment_mode == 'COD') ? 5 : 0; 
     // Insert the order into the orders table
-    $sql_query = "INSERT INTO orders (user_id, address_id, product_id, payment_mode, delivery_charges, total_price, live_tracking, ordered_date, price,created_at) 
-                           VALUES ('$user_id', '$address_id', '$product_id', '$payment_mode', '$delivery_charges', '$total_price', '$live_tracking', '$ordered_date', '$price','$created_at')";
+    $sql_query = "INSERT INTO orders (user_id, address_id, product_id, payment_mode, delivery_charges, total_price, live_tracking, ordered_date, price, created_at, chat_conversation, payment_image, status)
+    VALUES ('$user_id', '$address_id', '$product_id', '$payment_mode', '$delivery_charges', '$total_price', '$live_tracking', '$ordered_date', '$price', '$created_at', '$chat_conversation_full_path', '$payment_image_full_path', '$status')";
     $db->sql($sql_query);
     $result = $db->getResult();
     if (!empty($result)) {
@@ -121,7 +169,7 @@ ob_end_flush();
         <div class="col-md-6">
             <div class="box">
                 <div class="box-body">
-                    <form id="customer_form" method="POST" action="#" class="form-horizontal">
+                <form id="customer_form" method="POST" action="#" class="form-horizontal" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="mobile" class="col-sm-4 control-label">Mobile Number:</label>
                             <div class="col-sm-8">
@@ -164,17 +212,34 @@ ob_end_flush();
                                 </select>
                             </div>
                         </div>
+                        <!-- Chat Conversation Image Upload (Mandatory) -->
+                        <div class="form-group">
+                            <label for="chat_conversation" class="col-sm-4 control-label">Chat Conversation Image:</label>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="chat_conversation" name="chat_conversation" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Mode -->
                         <div class="form-group">
                             <label class="col-md-4 control-label">Payment Mode:</label>
                             <div class="col-md-5">
                                 <div id="payment_mode" class="btn-group pull-right">
-                                    <label class="btn btn-primary" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default" >
+                                    <label class="btn btn-primary">
                                         <input type="radio" name="payment_mode" value="Prepaid" required> Prepaid
                                     </label>
-                                    <label class="btn btn-success" data-toggle-class="btn-default" data-toggle-passive-class="btn-default" >
+                                    <label class="btn btn-success">
                                         <input type="radio" name="payment_mode" value="COD" required> COD
                                     </label>
                                 </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Image Upload (Visible Only for Prepaid) -->
+                        <div class="form-group" id="payment_image_group" style="display:none;">
+                            <label for="payment_image" class="col-sm-4 control-label">Payment Image:</label>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="payment_image" name="payment_image">
                             </div>
                         </div>
                         <div class="box-footer">
@@ -191,6 +256,21 @@ ob_end_flush();
 </section>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Show/hide payment_image based on payment mode selection
+    $('input[name="payment_mode"]').on('change', function() {
+        if ($(this).val() === 'Prepaid') {
+            $('#payment_image_group').show();
+            $('#payment_image').prop('required', true);  // Make it mandatory when Prepaid is selected
+        } else {
+            $('#payment_image_group').hide();
+            $('#payment_image').prop('required', false); // Hide it and remove mandatory status when COD is selected
+        }
+    });
+});
+</script>
+
 <script>
     $(document).ready(function() {
 

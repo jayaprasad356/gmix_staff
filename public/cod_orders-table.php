@@ -1,5 +1,5 @@
 <section class="content-header">
-    <h1>Orders /<small><a href="home.php"><i class="fa fa-home"></i> Home</a></small></h1>
+    <h1>COD Orders /<small><a href="home.php"><i class="fa fa-home"></i> Home</a></small></h1>
 </section>
 
 <section class="content">
@@ -18,12 +18,13 @@
                             </select>
                         </div>
                     </div>
-                        <table id='users_table' class="table table-hover" data-toggle="table" data-url="api-firebase/get-bootstrap-table-data.php?table=orders" data-page-list="[5, 10, 20, 50, 100, 200]" data-show-refresh="true" data-show-columns="true" data-side-pagination="server" data-pagination="true" data-search="true" data-trim-on-search="false" data-filter-control="true" data-query-params="queryParams" data-sort-name="id" data-sort-order="desc" data-show-export="true" data-export-types='["txt","csv"]' data-export-options='{
+                        <table id='users_table' class="table table-hover" data-toggle="table" data-url="api-firebase/get-bootstrap-table-data.php?table=cod_orders" data-page-list="[5, 10, 20, 50, 100, 200]" data-show-refresh="true" data-show-columns="true" data-side-pagination="server" data-pagination="true" data-search="true" data-trim-on-search="false" data-filter-control="true" data-query-params="queryParams" data-sort-name="id" data-sort-order="desc" data-show-export="true" data-export-types='["txt","csv"]' data-export-options='{
                             "fileName": "users-list-<?= date('d-m-Y') ?>",
                             "ignoreColumn": ["operate"] 
                         }'>
                             <thead>
                                 <tr>
+                                    <th  data-field="operate" data-events="actionEvents">Action</th>
                                     <th data-field="id" data-sortable="true">ID</th>
                                     <th data-field="ordered_date" data-sortable="true">Ordered Date</th>
                                     <th data-field="status" data-sortable="true">Status</th>
@@ -33,9 +34,9 @@
                                     <th data-field="measurement" data-sortable="true">Measurement</th>
                                     <th data-field="total_price" data-sortable="true">Total Price</th>
                                     <th data-field="est_delivery_date" data-sortable="true">Est Delivery Date</th>
-                                    <th data-field="attempt1" data-sortable="true">Attempt 1</th>
-                                    <th data-field="attempt2" data-sortable="true">Attempt21</th>
                                     <th data-field="live_tracking" data-sortable="true" data-formatter="liveTrackingFormatter">Live Tracking</th>
+                                    <th data-field="chat_conversation">Chat Conversation</th>
+                                    <th data-field="payment_image">Payment Image</th>
                                 </tr>
                             </thead>
                         </table>

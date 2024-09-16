@@ -46,6 +46,40 @@ include "header.php";
                 </li>
             </ol>
         </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-lg-4 col-xs-6">
+                    <div class="small-box bg-green">
+                        <div class="inner">
+                            <h3>
+                                <?php
+                                $staffID = $_SESSION['id'];
+                                $date = date('Y-m-d');
+                                $sql = "SELECT COUNT(o.id) AS count  FROM orders o  JOIN users u ON u.id = o.user_id WHERE u.staff_id = '$staffID' AND DATE(o.ordered_date) = '$date'";
+                                $db->sql($sql);
+                                $res = $db->getResult();
+                                $count = isset($res[0]['count']) ? $res[0]['count'] : 0;
+                                echo $count;
+                                ?>
+                            </h3>
+                            <p>Today Orders</p>
+                        </div>
+                        <a href="orders.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-xs-6">
+                    <div class="small-box bg-purple">
+                        <div class="inner">
+                            <h3><?php 
+                             ?>10</h3>
+                            <p>Today Targets</p>
+                        </div>
+                        <div class="icon"><i class="fa fa-users"></i></div>
+                        <a href="orders.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+             </div>
+        </section>
     </div>
     <?php include "footer.php"; ?>
 </body>

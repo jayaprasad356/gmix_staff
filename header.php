@@ -205,6 +205,12 @@ $fn = new custom_functions;
                         <span>My Customers</span>
                     </a>
                 </li>
+                <li class="treeview">
+                    <a href="cod_orders.php">
+                    <i class="fa fa-gift"></i>
+                        <span>COD Orders</span>
+                    </a>
+                </li>
             </section>
             <!-- /.sidebar -->
         </aside>
