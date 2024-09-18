@@ -160,7 +160,7 @@ if (isset($_POST['btnAdd'])) {
                         </div>
                         <div class="form-group">
                             <label for="city">City</label>
-                            <input type="text" id="city" name="city" class="form-control" readonly>
+                            <input type="text" id="city" name="city" class="form-control" >
                         </div>
                         <div class="form-group">
                             <label for="pincode">Pincode</label>
@@ -168,7 +168,7 @@ if (isset($_POST['btnAdd'])) {
                         </div>
                         <div class="form-group">
                             <label for="state">State</label>
-                            <input type="text" id="state" name="state" class="form-control" readonly>
+                            <input type="text" id="state" name="state" class="form-control" >
                         </div>
                         <div class="form-group">
                             <label for="landmark">Landmark (Optional)</label>
