@@ -293,8 +293,8 @@ $db->connect();
             $where = '';
             $sort = 'id';
             $order = 'DESC';
-            //$date_filter = isset($_GET['date_filter']) ? $_GET['date_filter'] : '';
-
+        
+            // Retrieve query parameters safely
             if (isset($_GET['offset'])) {
                 $offset = $db->escapeString($_GET['offset']);
             }
@@ -307,39 +307,39 @@ $db->connect();
             if (isset($_GET['order'])) {
                 $order = $db->escapeString($_GET['order']);
             }
-
+        
+            // Add search filter
             if (isset($_GET['search']) && !empty($_GET['search'])) {
                 $search = $db->escapeString($fn->xss_clean($_GET['search']));
                 $where .= " AND (users.name LIKE '%" . $search . "%' OR products.name LIKE '%" . $search . "%')";
             }
-
-          
-
+        
+            // Ensure session is set
             if (!isset($_SESSION['id'])) {
-                // Redirect to login page or handle unauthorized access
+               
             }
-
+        
             // Query for total count
             $sql = "SELECT COUNT(orders.id) as total
                     FROM orders
-                    INNER JOIN users ON orders.user_id = users.id
-                    INNER JOIN products ON orders.product_id = products.id
-                    INNER JOIN addresses ON orders.address_id = addresses.id
+                    LEFT JOIN users ON orders.user_id = users.id
+                    LEFT JOIN products ON orders.product_id = products.id
+                    LEFT JOIN addresses ON orders.address_id = addresses.id
                     WHERE users.staff_id = {$_SESSION['id']}" . $where . " AND orders.status = 5";
+        
             $db->sql($sql);
             $res = $db->getResult();
             $total = $res[0]['total'];
-
-            // Query for paginated results
+        
             $sql = "SELECT orders.id, users.name as user_name, products.name as product_name,
                            CONCAT(products.measurement, products.unit) as measurement,
                            CONCAT(addresses.door_no, ', ', addresses.street_name, ', ', addresses.state, ', ', addresses.city, ', ', addresses.pincode) as address,
                            orders.status, orders.ordered_date, orders.total_price, orders.est_delivery_date, orders.chat_conversation, orders.payment_image,
                            CONCAT(orders.live_tracking, orders.awb) as live_tracking
                     FROM orders
-                    INNER JOIN users ON orders.user_id = users.id
-                    INNER JOIN products ON orders.product_id = products.id
-                    INNER JOIN addresses ON orders.address_id = addresses.id
+                    LEFT JOIN users ON orders.user_id = users.id
+                    LEFT JOIN products ON orders.product_id = products.id
+                    LEFT JOIN addresses ON orders.address_id = addresses.id
                     WHERE users.staff_id = {$_SESSION['id']}" . $where . " AND orders.status = 5
                     ORDER BY " . $sort . " " . $order . " LIMIT " . $offset . ", " . $limit;
             $db->sql($sql);
