@@ -24,7 +24,6 @@
                                     <th data-field="measurement" data-sortable="true">Measurement</th>
                                     <th data-field="total_price" data-sortable="true">Total Price</th>
                                     <th data-field="est_delivery_date" data-sortable="true">Est Delivery Date</th>
-                                    <th data-field="live_tracking" data-sortable="true" data-formatter="liveTrackingFormatter">Live Tracking</th>
                                     <th data-field="chat_conversation">Chat Conversation</th>
                                     <th data-field="payment_image">Payment Image</th>
                                 </tr>
