@@ -52,7 +52,9 @@ class Database
             return true; // Connection has already been made return TRUE 
         }
     }
-
+    public function getAffectedRows() {
+        return $this->myconn->affected_rows;
+    }
     // Function to disconnect from the database
     public function disconnect()
     {

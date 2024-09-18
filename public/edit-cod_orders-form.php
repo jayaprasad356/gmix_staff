@@ -52,13 +52,13 @@ if (isset($_POST['btnEdit'])) {
                 $db->sql($sql_query);
                 $update_result = $db->getResult();
                 if ($db->getAffectedRows() > 0) {
-                    $update_message = "Attempt 1 updated successfully.";
+                    $update_message = "<span class='label label-success'>Attempt 1 updated successfully.</span>";
                 } else {
-                    $update_message = "Failed to update Attempt 1.";
+                    $update_message = "<span class='label label-danger'>Failed to update Attempt 1.</span>";
                 }
             }
 
-            $error['update_languages'] = "<span class='label label-success'>$update_message</span>";
+            $error['update_languages'] = $update_message;
         } else {
             // If it's later than the next day, enable both and update status
             $attempt1_disabled = '';
