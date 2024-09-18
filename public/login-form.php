@@ -10,9 +10,9 @@ $fn = new custom_functions;
 
 // Database connection configuration
 $host = 'localhost';
-$username = 'u743445510_gmix';
-$password = 'Gmix@2024';
-$database = 'u743445510_gmix';
+$username = 'u743445510_demo_gmix';
+$password = 'Demogmix@2024';
+$database = 'u743445510_demo_gmix';
 
 // Create a new mysqli object
 $db = new mysqli($host, $username, $password, $database);
