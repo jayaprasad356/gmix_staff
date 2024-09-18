@@ -293,7 +293,7 @@ $db->connect();
             $where = '';
             $sort = 'id';
             $order = 'DESC';
-            $date_filter = isset($_GET['date_filter']) ? $_GET['date_filter'] : '';
+            //$date_filter = isset($_GET['date_filter']) ? $_GET['date_filter'] : '';
 
             if (isset($_GET['offset'])) {
                 $offset = $db->escapeString($_GET['offset']);
@@ -313,12 +313,7 @@ $db->connect();
                 $where .= " AND (users.name LIKE '%" . $search . "%' OR products.name LIKE '%" . $search . "%')";
             }
 
-            // Add date filter logic
-            if ($date_filter == 'today') {
-                $where .= " AND DATE(orders.ordered_date) = CURDATE()";
-            } elseif ($date_filter == 'yesterday') {
-                $where .= " AND DATE(orders.ordered_date) = CURDATE() - INTERVAL 1 DAY";
-            }
+          
 
             if (!isset($_SESSION['id'])) {
                 // Redirect to login page or handle unauthorized access
