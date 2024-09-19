@@ -224,7 +224,7 @@ $db->connect();
             $sql = "SELECT orders.id, users.mobile as user_mobile, products.name as product_name,
                            CONCAT(products.measurement, products.unit) as measurement,
                            CONCAT(addresses.door_no, ', ', addresses.street_name, ', ', addresses.state, ', ', addresses.city, ', ', addresses.pincode) as address,
-                           orders.status, orders.ordered_date, orders.total_price, orders.est_delivery_date,orders.chat_conversation, orders.payment_image,orders.attempt1,orders.attempt2,
+                           orders.status, orders.ordered_date, orders.total_price, orders.est_delivery_date,orders.chat_conversation, orders.payment_image,orders.attempt1,orders.attempt2,orders.payment_mode,
                            CONCAT(orders.live_tracking, orders.awb) as live_tracking
                     FROM orders
                     INNER JOIN users ON orders.user_id = users.id
@@ -246,6 +246,7 @@ $db->connect();
                 $tempRow['id'] = $row['id'];
                 $tempRow['user_mobile'] = $row['user_mobile'];
                 $tempRow['product_name'] = $row['product_name'];
+                $tempRow['payment_mode'] = $row['payment_mode'];
                 $tempRow['measurement'] = $row['measurement'];
                 $tempRow['address'] = $row['address'];
                 $tempRow['ordered_date'] = $row['ordered_date'];
@@ -334,7 +335,7 @@ $db->connect();
             $sql = "SELECT orders.id, users.mobile as user_mobile, products.name as product_name,
                            CONCAT(products.measurement, products.unit) as measurement,
                            CONCAT(addresses.door_no, ', ', addresses.street_name, ', ', addresses.state, ', ', addresses.city, ', ', addresses.pincode) as address,
-                           orders.status, orders.ordered_date, orders.total_price, orders.est_delivery_date, orders.chat_conversation, orders.payment_image,
+                           orders.status, orders.ordered_date, orders.total_price, orders.est_delivery_date, orders.chat_conversation, orders.payment_image,orders.payment_mode,orders.attempt1,orders.attempt2,
                            CONCAT(orders.live_tracking, orders.awb) as live_tracking
                     FROM orders
                     LEFT JOIN users ON orders.user_id = users.id
@@ -357,11 +358,14 @@ $db->connect();
                 $tempRow['id'] = $row['id'];
                 $tempRow['user_mobile'] = $row['user_mobile'];
                 $tempRow['product_name'] = $row['product_name'];
+                $tempRow['payment_mode'] = $row['payment_mode'];
                 $tempRow['measurement'] = $row['measurement'];
                 $tempRow['address'] = $row['address'];
                 $tempRow['ordered_date'] = $row['ordered_date'];
                 $tempRow['total_price'] = $row['total_price'];
                 $tempRow['est_delivery_date'] = $row['est_delivery_date'];
+                $tempRow['attempt1'] = $row['attempt1'];
+                $tempRow['attempt2'] = $row['attempt2'];
                 if (!empty($row['chat_conversation'])) {
                     $tempRow['chat_conversation'] = "<a data-lightbox='category' href='" . $row['chat_conversation'] . "' data-caption='" . $row['chat_conversation'] . "'><img src='" . $row['chat_conversation'] . "' title='" . $row['chat_conversation'] . "' height='50' /></a>";
                 } else {

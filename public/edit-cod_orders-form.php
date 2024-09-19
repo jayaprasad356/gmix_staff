@@ -65,14 +65,18 @@ if (isset($_POST['btnEdit'])) {
             $attempt2_disabled = '';
             $status = 0; // Update status to 0
 
-            $sql_query = "UPDATE orders SET attempt1='$attempt1', attempt2='$attempt2', status='$status' WHERE id = $ID";
-            $db->sql($sql_query);
-            $update_result = $db->getResult();
-
-            if ($db->getAffectedRows() > 0) {
-                $error['update_languages'] = "<span class='label label-success'>Attempt 1 and Attempt 2 updated successfully.</span>";
+            if (!empty($attempt1) && empty($attempt2)) {
+                $error['update_languages'] = "<span class='label label-danger'>You need to fill Attempt 2 also.</span>";
             } else {
-                $error['update_languages'] = "<span class='label label-danger'>Failed to update Attempt 1 and Attempt 2.</span>";
+                $sql_query = "UPDATE orders SET attempt1='$attempt1', attempt2='$attempt2', status='$status' WHERE id = $ID";
+                $db->sql($sql_query);
+                $update_result = $db->getResult();
+
+                if ($db->getAffectedRows() > 0) {
+                    $error['update_languages'] = "<span class='label label-success'>Attempt 1 and Attempt 2 updated successfully.</span>";
+                } else {
+                    $error['update_languages'] = "<span class='label label-danger'>Failed to update Attempt 1 and Attempt 2.</span>";
+                }
             }
         }
     }

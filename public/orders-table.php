@@ -28,6 +28,7 @@
                                     <th data-field="user_mobile" data-sortable="true">User Mobile</th>
                                     <th data-field="ordered_date" data-sortable="true">Ordered Date</th>
                                     <th data-field="status" data-sortable="true">Status</th>
+                                    <th data-field="payment_mode" data-sortable="true">Payment Mode</th>
                                     <th data-field="address" data-sortable="true">Address</th>
                                     <th data-field="product_name" data-sortable="true">Product Name</th>
                                     <th data-field="measurement" data-sortable="true">Measurement</th>

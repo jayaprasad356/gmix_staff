@@ -20,6 +20,7 @@
                                     <th data-field="user_mobile" data-sortable="true">User Mobile</th>
                                     <th data-field="ordered_date" data-sortable="true">Ordered Date</th>
                                     <th data-field="status" data-sortable="true">Status</th>
+                                    <th data-field="payment_mode" data-sortable="true">Payment Mode</th>
                                     <th data-field="address" data-sortable="true">Address</th>
                                     <th data-field="product_name" data-sortable="true">Product Name</th>
                                     <th data-field="measurement" data-sortable="true">Measurement</th>
@@ -27,6 +28,8 @@
                                     <th data-field="est_delivery_date" data-sortable="true">Est Delivery Date</th>
                                     <th data-field="chat_conversation">Chat Conversation</th>
                                     <th data-field="payment_image">Payment Image</th>
+                                    <th data-field="attempt1" data-sortable="true">Attempt 1</th>
+                                    <th data-field="attempt2" data-sortable="true">Attempt 2</th>
                                 </tr>
                             </thead>
                         </table>
