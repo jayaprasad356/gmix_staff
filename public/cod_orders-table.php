@@ -17,6 +17,7 @@
                                 <tr>
                                     <th  data-field="operate" data-events="actionEvents">Action</th>
                                     <th data-field="id" data-sortable="true">ID</th>
+                                    <th data-field="user_mobile" data-sortable="true">User Mobile</th>
                                     <th data-field="ordered_date" data-sortable="true">Ordered Date</th>
                                     <th data-field="status" data-sortable="true">Status</th>
                                     <th data-field="address" data-sortable="true">Address</th>

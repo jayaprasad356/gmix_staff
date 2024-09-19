@@ -195,7 +195,7 @@ $db->connect();
         
             if (isset($_GET['search']) && !empty($_GET['search'])) {
                 $search = $db->escapeString($fn->xss_clean($_GET['search']));
-                $where .= " AND (users.name LIKE '%" . $search . "%' OR products.name LIKE '%" . $search . "%')";
+                $where .= " AND (users.mobile LIKE '%" . $search . "%' OR products.name LIKE '%" . $search . "%')";
             }
         
             // Add date filter logic
@@ -221,7 +221,7 @@ $db->connect();
             $total = $res[0]['total'];
         
             // Query for paginated results
-            $sql = "SELECT orders.id, users.name as user_name, products.name as product_name,
+            $sql = "SELECT orders.id, users.mobile as user_mobile, products.name as product_name,
                            CONCAT(products.measurement, products.unit) as measurement,
                            CONCAT(addresses.door_no, ', ', addresses.street_name, ', ', addresses.state, ', ', addresses.city, ', ', addresses.pincode) as address,
                            orders.status, orders.ordered_date, orders.total_price, orders.est_delivery_date,orders.chat_conversation, orders.payment_image,orders.attempt1,orders.attempt2,
@@ -244,7 +244,7 @@ $db->connect();
             foreach ($res as $row) {
                 $operate = ' <a class="text text-danger" href="delete-customers.php?id=' . $row['id'] . '"><i class="fa fa-trash"></i>Delete</a>';
                 $tempRow['id'] = $row['id'];
-                $tempRow['user_name'] = $row['user_name'];
+                $tempRow['user_mobile'] = $row['user_mobile'];
                 $tempRow['product_name'] = $row['product_name'];
                 $tempRow['measurement'] = $row['measurement'];
                 $tempRow['address'] = $row['address'];
@@ -311,7 +311,7 @@ $db->connect();
             // Add search filter
             if (isset($_GET['search']) && !empty($_GET['search'])) {
                 $search = $db->escapeString($fn->xss_clean($_GET['search']));
-                $where .= " AND (users.name LIKE '%" . $search . "%' OR products.name LIKE '%" . $search . "%')";
+                $where .= " AND (users.mobile LIKE '%" . $search . "%' OR products.name LIKE '%" . $search . "%')";
             }
         
             // Ensure session is set
@@ -331,7 +331,7 @@ $db->connect();
             $res = $db->getResult();
             $total = $res[0]['total'];
         
-            $sql = "SELECT orders.id, users.name as user_name, products.name as product_name,
+            $sql = "SELECT orders.id, users.mobile as user_mobile, products.name as product_name,
                            CONCAT(products.measurement, products.unit) as measurement,
                            CONCAT(addresses.door_no, ', ', addresses.street_name, ', ', addresses.state, ', ', addresses.city, ', ', addresses.pincode) as address,
                            orders.status, orders.ordered_date, orders.total_price, orders.est_delivery_date, orders.chat_conversation, orders.payment_image,
@@ -355,7 +355,7 @@ $db->connect();
                 $operate = '<a href="edit-cod_orders.php?id=' . $row['id'] . '"><i class="fa fa-edit"></i>Edit</a>';
                 //$operate = ' <a class="text text-danger" href="delete-customers.php?id=' . $row['id'] . '"><i class="fa fa-trash"></i>Delete</a>';
                 $tempRow['id'] = $row['id'];
-                $tempRow['user_name'] = $row['user_name'];
+                $tempRow['user_mobile'] = $row['user_mobile'];
                 $tempRow['product_name'] = $row['product_name'];
                 $tempRow['measurement'] = $row['measurement'];
                 $tempRow['address'] = $row['address'];
