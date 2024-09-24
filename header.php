@@ -211,6 +211,12 @@ $fn = new custom_functions;
                         <span>COD Orders</span>
                     </a>
                 </li>
+                <li class="treeview">
+                    <a href="tickets.php">
+                    <i class="fa fa-ticket-alt"></i>
+                        <span>Rise Ticket</span>
+                    </a>
+                </li>
             </section>
             <!-- /.sidebar -->
         </aside>

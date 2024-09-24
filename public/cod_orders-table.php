@@ -29,7 +29,6 @@
                                     <th data-field="chat_conversation">Chat Conversation</th>
                                     <th data-field="payment_image">Payment Image</th>
                                     <th data-field="attempt1" data-sortable="true">Attempt 1</th>
-                                    <th data-field="attempt2" data-sortable="true">Attempt 2</th>
                                 </tr>
                             </thead>
                         </table>

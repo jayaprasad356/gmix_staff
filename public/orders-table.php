@@ -35,7 +35,6 @@
                                     <th data-field="total_price" data-sortable="true">Total Price</th>
                                     <th data-field="est_delivery_date" data-sortable="true">Est Delivery Date</th>
                                     <th data-field="attempt1" data-sortable="true">Attempt 1</th>
-                                    <th data-field="attempt2" data-sortable="true">Attempt 2</th>
                                 </tr>
                             </thead>
                         </table>

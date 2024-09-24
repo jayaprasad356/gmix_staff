@@ -13,14 +13,12 @@ if (isset($_GET['id'])) {
 
 // Initialize variables
 $attempt1_disabled = '';
-$attempt2_disabled = '';
 $status = 5; // Default status
 $attempt1 = '';
-$attempt2 = '';
+
 
 if (isset($_POST['btnEdit'])) {
     $attempt1 = isset($_POST['attempt1']) ? $db->escapeString($_POST['attempt1']) : '';
-    $attempt2 = isset($_POST['attempt2']) ? $db->escapeString($_POST['attempt2']) : '';
     $error = array();
 
     // Fetch ordered_date for the given ID
@@ -39,16 +37,14 @@ if (isset($_POST['btnEdit'])) {
         if ($today === $ordered_date) {
             // If today is the ordered_date, disable both attempt1 and attempt2
             $attempt1_disabled = 'disabled';
-            $attempt2_disabled = 'disabled';
             $error['update_languages'] = "<span class='label label-danger'>Cannot update attempts today. Fields are disabled.</span>";
         } elseif ($today === $next_day) {
             // If today is the next day, disable attempt2 and enable attempt1
             $attempt1_disabled = '';
-            $attempt2_disabled = 'disabled';
             $update_message = '';
 
             if (!empty($attempt1)) {
-                $sql_query = "UPDATE orders SET attempt1='$attempt1' WHERE id = $ID";
+                $sql_query = "UPDATE orders SET attempt1='$attempt1', status = 0 WHERE id = $ID";
                 $db->sql($sql_query);
                 $update_result = $db->getResult();
                 if ($db->getAffectedRows() > 0) {
@@ -59,28 +55,11 @@ if (isset($_POST['btnEdit'])) {
             }
 
             $error['update_languages'] = $update_message;
-        } else {
-            // If it's later than the next day, enable both and update status
-            $attempt1_disabled = '';
-            $attempt2_disabled = '';
-            $status = 0; // Update status to 0
-
-            if (!empty($attempt1) && empty($attempt2)) {
-                $error['update_languages'] = "<span class='label label-danger'>You need to fill Attempt 2 also.</span>";
-            } else {
-                $sql_query = "UPDATE orders SET attempt1='$attempt1', attempt2='$attempt2', status='$status' WHERE id = $ID";
-                $db->sql($sql_query);
-                $update_result = $db->getResult();
-
-                if ($db->getAffectedRows() > 0) {
-                    $error['update_languages'] = "<span class='label label-success'>Attempt 1 and Attempt 2 updated successfully.</span>";
-                } else {
-                    $error['update_languages'] = "<span class='label label-danger'>Failed to update Attempt 1 and Attempt 2.</span>";
-                }
-            }
+        } 
+           
         }
     }
-}
+
 
 $sql_query = "SELECT * FROM orders WHERE id = $ID";
 $db->sql($sql_query);
@@ -118,10 +97,6 @@ if (isset($_POST['btnCancel'])) { ?>
                                     <label for="attempt1">Attempt 1</label><i class="text-danger asterik">*</i>
                                     <textarea class="form-control" name="attempt1" id="attempt1" <?php echo $attempt1_disabled; ?>><?php echo isset($res[0]['attempt1']) ? htmlspecialchars($res[0]['attempt1']) : ''; ?></textarea>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="attempt2">Attempt 2</label><i class="text-danger asterik">*</i>
-                                    <textarea class="form-control" name="attempt2" id="attempt2" <?php echo $attempt2_disabled; ?>><?php echo isset($res[0]['attempt2']) ? htmlspecialchars($res[0]['attempt2']) : ''; ?></textarea>
-                                </div>
                             </div>
                         </div>
                         <div class="box-footer">
@@ -142,7 +117,6 @@ if (isset($_POST['btnCancel'])) { ?>
     document.addEventListener('DOMContentLoaded', function() {
         var orderedDate = document.getElementById('ordered_date').value;
         var attempt1Field = document.getElementById('attempt1');
-        var attempt2Field = document.getElementById('attempt2');
         var today = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
 
         // Convert ordered_date to YYYY-MM-DD format for comparison
@@ -152,15 +126,9 @@ if (isset($_POST['btnCancel'])) { ?>
         if (today === orderedDateFormatted) {
             // Disable both fields if ordered_date is today
             attempt1Field.disabled = true;
-            attempt2Field.disabled = true;
         } else if (today === nextDay) {
             // Enable attempt1 and disable attempt2 if today is the day after ordered_date
             attempt1Field.disabled = false;
-            attempt2Field.disabled = true;
-        } else {
-            // Enable both fields for any other case
-            attempt1Field.disabled = false;
-            attempt2Field.disabled = false;
         }
     });
 </script>

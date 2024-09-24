@@ -224,7 +224,7 @@ $db->connect();
             $sql = "SELECT orders.id, users.mobile as user_mobile, products.name as product_name,
                            CONCAT(products.measurement, products.unit) as measurement,
                            CONCAT(addresses.door_no, ', ', addresses.street_name, ', ', addresses.state, ', ', addresses.city, ', ', addresses.pincode) as address,
-                           orders.status, orders.ordered_date, orders.total_price, orders.est_delivery_date,orders.chat_conversation, orders.payment_image,orders.attempt1,orders.attempt2,orders.payment_mode,
+                           orders.status, orders.ordered_date, orders.total_price, orders.est_delivery_date,orders.chat_conversation, orders.payment_image,orders.attempt1,orders.payment_mode,
                            CONCAT(orders.live_tracking, orders.awb) as live_tracking
                     FROM orders
                     INNER JOIN users ON orders.user_id = users.id
@@ -253,7 +253,6 @@ $db->connect();
                 $tempRow['total_price'] = $row['total_price'];
                 $tempRow['est_delivery_date'] = $row['est_delivery_date'];
                 $tempRow['attempt1'] = $row['attempt1'];
-                $tempRow['attempt2'] = $row['attempt2'];
                 if (!empty($row['chat_conversation'])) {
                     $tempRow['chat_conversation'] = "<a data-lightbox='category' href='" . $row['chat_conversation'] . "' data-caption='" . $row['chat_conversation'] . "'><img src='" . $row['chat_conversation'] . "' title='" . $row['chat_conversation'] . "' height='50' /></a>";
                 } else {
@@ -335,7 +334,7 @@ $db->connect();
             $sql = "SELECT orders.id, users.mobile as user_mobile, products.name as product_name,
                            CONCAT(products.measurement, products.unit) as measurement,
                            CONCAT(addresses.door_no, ', ', addresses.street_name, ', ', addresses.state, ', ', addresses.city, ', ', addresses.pincode) as address,
-                           orders.status, orders.ordered_date, orders.total_price, orders.est_delivery_date, orders.chat_conversation, orders.payment_image,orders.payment_mode,orders.attempt1,orders.attempt2,
+                           orders.status, orders.ordered_date, orders.total_price, orders.est_delivery_date, orders.chat_conversation, orders.payment_image,orders.payment_mode,orders.attempt1,
                            CONCAT(orders.live_tracking, orders.awb) as live_tracking
                     FROM orders
                     LEFT JOIN users ON orders.user_id = users.id
@@ -365,7 +364,6 @@ $db->connect();
                 $tempRow['total_price'] = $row['total_price'];
                 $tempRow['est_delivery_date'] = $row['est_delivery_date'];
                 $tempRow['attempt1'] = $row['attempt1'];
-                $tempRow['attempt2'] = $row['attempt2'];
                 if (!empty($row['chat_conversation'])) {
                     $tempRow['chat_conversation'] = "<a data-lightbox='category' href='" . $row['chat_conversation'] . "' data-caption='" . $row['chat_conversation'] . "'><img src='" . $row['chat_conversation'] . "' title='" . $row['chat_conversation'] . "' height='50' /></a>";
                 } else {
@@ -462,6 +460,81 @@ $db->connect();
             $bulkData['rows'] = $rows;
             print_r(json_encode($bulkData));
         }
-      
+        if (isset($_GET['table']) && $_GET['table'] == 'tickets') {
+
+            $offset = 0;
+            $limit = 10;
+            $where = '';
+            $sort = 'id';
+            $order = 'DESC';
+
+            // Retrieve query parameters safely
+            if (isset($_GET['offset'])) {
+                $offset = $db->escapeString($_GET['offset']);
+            }
+            if (isset($_GET['limit'])) {
+                $limit = $db->escapeString($_GET['limit']);
+            }
+            if (isset($_GET['sort'])) {
+                $sort = $db->escapeString($_GET['sort']);
+            }
+            if (isset($_GET['order'])) {
+                $order = $db->escapeString($_GET['order']);
+            }
+
+            // Add search filter
+            if (isset($_GET['search']) && !empty($_GET['search'])) {
+                $search = $db->escapeString($fn->xss_clean($_GET['search']));
+                $where .= " AND (users.mobile LIKE '%" . $search . "%' OR products.name LIKE '%" . $search . "%')";
+            }
+
+            // Ensure session is set
+            if (!isset($_SESSION['id'])) {
+                // Handle unauthorized access
+            }
+
+            // Query for total count
+            $sql = "SELECT COUNT(tickets.id) as total
+                    FROM tickets
+                    LEFT JOIN orders ON tickets.order_id = orders.id
+                    LEFT JOIN users ON orders.user_id = users.id
+                    WHERE users.staff_id = {$_SESSION['id']}" . $where;
+
+            $db->sql($sql);
+            $res = $db->getResult();
+            $total = $res[0]['total'];
+
+            $sql = "SELECT tickets.id, tickets.order_id, tickets.title, tickets.description, tickets.status
+                    FROM tickets
+                    LEFT JOIN orders ON tickets.order_id = orders.id
+                    LEFT JOIN users ON orders.user_id = users.id
+                    WHERE users.staff_id = {$_SESSION['id']}" . $where . "
+                    ORDER BY " . $sort . " " . $order . " LIMIT " . $offset . ", " . $limit;
+            $db->sql($sql);
+            $res = $db->getResult();
+
+            $bulkData = array();
+            $bulkData['total'] = $total;
+
+            $rows = array();
+            $tempRow = array();
+
+            foreach ($res as $row) {
+                $tempRow['id'] = $row['id'];
+                $tempRow['order_id'] = $row['order_id'];
+                $tempRow['title'] = $row['title'];
+                $tempRow['description'] = $row['description'];
+                if ($row['status'] == 0) {
+                    $tempRow['status'] = "<p class='label label-default'>Pending</p>";
+                } elseif ($row['status'] == 1) {
+                    $tempRow['status'] = "<p class='label label-success'>Confirmed</p>";
+                } else {
+                    $tempRow['status'] = "<p class='label label-default'>Unknown</p>";
+                }
+                $rows[] = $tempRow;
+            }
+            $bulkData['rows'] = $rows;
+            print_r(json_encode($bulkData));
+        }
 $db->disconnect();
 
