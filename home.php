@@ -55,7 +55,7 @@ include "header.php";
                                 <?php
                                 $staffID = $_SESSION['id'];
                                 $date = date('Y-m-d');
-                                $sql = "SELECT COUNT(o.id) AS count  FROM orders o  JOIN users u ON u.id = o.user_id WHERE u.staff_id = '$staffID' AND DATE(o.ordered_date) = '$date'";
+                                $sql = "SELECT COUNT(o.id) AS count FROM orders o JOIN users u ON u.id = o.user_id WHERE u.staff_id = '$staffID' AND DATE(o.ordered_date) = '$date' AND o.status != 2";
                                 $db->sql($sql);
                                 $res = $db->getResult();
                                 $count = isset($res[0]['count']) ? $res[0]['count'] : 0;

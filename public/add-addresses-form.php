@@ -19,6 +19,10 @@ if (isset($_POST['btnAdd'])) {
     $state = $db->escapeString($_POST['state']);
     $landmark = $db->escapeString($_POST['landmark']);
 
+    // Remove spaces from first_name and last_name
+    $first_name = str_replace(' ', '', $first_name);
+    $last_name = str_replace(' ', '', $last_name);
+
     if (empty($last_name)) {
         $last_name = $first_name;
     }
@@ -29,8 +33,11 @@ if (isset($_POST['btnAdd'])) {
     if (empty($first_name)) {
         $error['first_name'] = " <span class='label label-danger'>Required!</span>";
     }
-    if (empty($mobile)) {
-        $error['mobile'] = " <span class='label label-danger'>Required!</span>";
+    if (empty($mobile) || strlen($mobile) != 10) {
+        $error['mobile'] = " <span class='label label-danger'>Required and must be 10 digits!</span>";
+    }
+    if (!empty($alternate_mobile) && strlen($alternate_mobile) != 10) {
+        $error['alternate_mobile'] = " <span class='label label-danger'>Must be 10 digits!</span>";
     }
     if (empty($door_no)) {
         $error['door_no'] = " <span class='label label-danger'>Required!</span>";
@@ -41,15 +48,15 @@ if (isset($_POST['btnAdd'])) {
     if (empty($city)) {
         $error['city'] = " <span class='label label-danger'>Required!</span>";
     }
-    if (empty($pincode)) {
-        $error['pincode'] = " <span class='label label-danger'>Required!</span>";
+    if (empty($pincode) || strlen($pincode) != 6) {
+        $error['pincode'] = " <span class='label label-danger'>Required and must be 6 digits!</span>";
     }
     if (empty($state)) {
         $error['state'] = " <span class='label label-danger'>Required!</span>";
     }
 
-      // Check if mobile and alternate_mobile are the same
-      if ($mobile === $alternate_mobile) {
+    // Check if mobile and alternate_mobile are the same
+    if ($mobile === $alternate_mobile) {
         $error['mobile_match'] = " <span class='label label-danger'>Mobile and Alternate Mobile cannot be the same!</span>";
     }
 
@@ -142,13 +149,14 @@ if (isset($_POST['btnAdd'])) {
                         </div>
                         <div class="form-group">
                             <label for="mobile">Mobile</label>
-                            <input type="text" id="mobile" name="mobile" class="form-control">
+                            <input type="text" id="mobile" name="mobile" class="form-control" pattern="\d{10}" title="Mobile number must be 10 digits">
                             <?php echo isset($error['mobile']) ? $error['mobile'] : ''; ?>
                         </div>
                         <div class="form-group">
                             <label for="alternate_mobile">Alternate Mobile</label>
-                            <input type="text" id="alternate_mobile" name="alternate_mobile" class="form-control">
+                            <input type="text" id="alternate_mobile" name="alternate_mobile" class="form-control" pattern="\d{10}" title="Alternate mobile number must be 10 digits">
                             <?php echo isset($error['mobile_match']) ? $error['mobile_match'] : ''; ?>
+                            <?php echo isset($error['alternate_mobile']) ? $error['alternate_mobile'] : ''; ?>
                         </div>
                         <div class="form-group">
                             <label for="door_no">Door No.</label>
@@ -164,7 +172,8 @@ if (isset($_POST['btnAdd'])) {
                         </div>
                         <div class="form-group">
                             <label for="pincode">Pincode</label>
-                            <input type="text" id="pincode" name="pincode" class="form-control" oninput="fetchStateAndCity()">
+                            <input type="text" id="pincode" name="pincode" class="form-control" pattern="\d{6}" title="Pincode must be 6 digits" oninput="fetchStateAndCity()">
+                            <?php echo isset($error['pincode']) ? $error['pincode'] : ''; ?>
                         </div>
                         <div class="form-group">
                             <label for="state">State</label>
@@ -188,8 +197,6 @@ if (isset($_POST['btnAdd'])) {
     </div><!-- /.row -->
 </section>
 
-
-
 <!-- Bootstrap Modal for Adding Users -->
 <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
@@ -207,7 +214,7 @@ if (isset($_POST['btnAdd'])) {
 
                     <div class="form-group">
                         <label for="modalMobile">Mobile</label>
-                        <input type="text" class="form-control" id="modalMobile" name="mobile" required>
+                        <input type="text" class="form-control" id="modalMobile" name="mobile" pattern="\d{10}" title="Mobile number must be 10 digits" required>
                     </div>
                 </div>
                 <div class="modal-footer">
