@@ -127,8 +127,8 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
     $created_at = date('Y-m-d H:i:s');
     $status = ($payment_mode == 'COD') ? 5 : 0; 
     // Insert the order into the orders table
-    $sql_query = "INSERT INTO orders (user_id, address_id, product_id, payment_mode, delivery_charges, total_price, live_tracking, ordered_date, price, created_at, chat_conversation, payment_image, status)
-    VALUES ('$user_id', '$address_id', '$product_id', '$payment_mode', '$delivery_charges', '$total_price', '$live_tracking', '$ordered_date', '$price', '$created_at', '$chat_conversation_full_path', '$payment_image_full_path', '$status')";
+    $sql_query = "INSERT INTO orders (user_id, address_id, product_id, payment_mode, delivery_charges, total_price, live_tracking, ordered_date, price, created_at, chat_conversation, payment_image, status,quantity)
+    VALUES ('$user_id', '$address_id', '$product_id', '$payment_mode', '$delivery_charges', '$total_price', '$live_tracking', '$ordered_date', '$price', '$created_at', '$chat_conversation_full_path', '$payment_image_full_path', '$status',1)";
     $db->sql($sql_query);
     $result = $db->getResult();
     if (!empty($result)) {
