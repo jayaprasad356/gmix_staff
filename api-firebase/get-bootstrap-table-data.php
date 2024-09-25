@@ -536,5 +536,121 @@ $db->connect();
             $bulkData['rows'] = $rows;
             print_r(json_encode($bulkData));
         }
+
+        if (isset($_GET['table']) && $_GET['table'] == 'orders_list') {
+
+            $offset = 0;
+            $limit = 10;
+            $where = '';
+            $sort = 'id';
+            $order = 'DESC';
+            $date_filter = isset($_GET['date_filter']) ? $_GET['date_filter'] : '';
+        
+            if (isset($_GET['offset'])) {
+                $offset = $db->escapeString($_GET['offset']);
+            }
+            if (isset($_GET['limit'])) {
+                $limit = $db->escapeString($_GET['limit']);
+            }
+            if (isset($_GET['sort'])) {
+                $sort = $db->escapeString($_GET['sort']);
+            }
+            if (isset($_GET['order'])) {
+                $order = $db->escapeString($_GET['order']);
+            }
+        
+            if (isset($_GET['search']) && !empty($_GET['search'])) {
+                $search = $db->escapeString($fn->xss_clean($_GET['search']));
+                $where .= " AND (addresses.mobile LIKE '%" . $search . "%' OR products.name LIKE '%" . $search . "%')";
+            }
+        
+            // Add date filter logic
+            if ($date_filter == 'today') {
+                $where .= " AND DATE(orders.ordered_date) = CURDATE()";
+            } elseif ($date_filter == 'yesterday') {
+                $where .= " AND DATE(orders.ordered_date) = CURDATE() - INTERVAL 1 DAY";
+            }
+        
+            if (!isset($_SESSION['id'])) {
+                // Redirect to login page or handle unauthorized access
+            }
+        
+            // Query for total count
+            $sql = "SELECT COUNT(orders.id) as total
+                    FROM orders
+                    INNER JOIN users ON orders.user_id = users.id
+                    INNER JOIN products ON orders.product_id = products.id
+                    INNER JOIN addresses ON orders.address_id = addresses.id
+                    WHERE users.staff_id = {$_SESSION['id']}" . $where;
+            $db->sql($sql);
+            $res = $db->getResult();
+            $total = $res[0]['total'];
+        
+            // Query for paginated results
+            $sql = "SELECT orders.id, users.mobile as user_mobile, products.name as product_name,addresses.mobile as addresses_mobile,
+                           CONCAT(products.name, '<br>', products.measurement, ' ', products.unit, '<br>', products.price) as product_details,
+                           CONCAT(addresses.door_no, ', ', addresses.street_name, ', ', addresses.state, ', ', addresses.city, ', ', addresses.pincode) as address,
+                           orders.status, orders.ordered_date, orders.total_price, orders.est_delivery_date,orders.chat_conversation, orders.payment_image,orders.attempt1,orders.payment_mode,
+                           CONCAT(orders.live_tracking, orders.awb) as live_tracking
+                    FROM orders
+                    INNER JOIN users ON orders.user_id = users.id
+                    INNER JOIN products ON orders.product_id = products.id
+                    INNER JOIN addresses ON orders.address_id = addresses.id
+                    WHERE users.staff_id = {$_SESSION['id']}" . $where . "
+                    ORDER BY " . $sort . " " . $order . " LIMIT " . $offset . ", " . $limit;
+            $db->sql($sql);
+            $res = $db->getResult();
+        
+            $bulkData = array();
+            $bulkData['total'] = $total;
+        
+            $rows = array();
+            $tempRow = array();
+        
+            foreach ($res as $row) {
+                $operate = ' <a class="text text-danger" href="delete-customers.php?id=' . $row['id'] . '"><i class="fa fa-trash"></i>Delete</a>';
+                $tempRow['id'] = $row['id'];
+                $tempRow['user_mobile'] = $row['user_mobile'];
+                $tempRow['addresses_mobile'] = $row['addresses_mobile'];
+                $tempRow['payment_mode'] = $row['payment_mode'];
+                $tempRow['product_details'] = $row['product_details'];
+                $tempRow['address'] = $row['address'];
+                $tempRow['ordered_date'] = $row['ordered_date'];
+                $tempRow['total_price'] = $row['total_price'];
+                $tempRow['est_delivery_date'] = $row['est_delivery_date'];
+                $tempRow['attempt1'] = $row['attempt1'];
+                if (!empty($row['chat_conversation'])) {
+                    $tempRow['chat_conversation'] = "<a data-lightbox='category' href='" . $row['chat_conversation'] . "' data-caption='" . $row['chat_conversation'] . "'><img src='" . $row['chat_conversation'] . "' title='" . $row['chat_conversation'] . "' height='50' /></a>";
+                } else {
+                    $tempRow['chat_conversation	'] = 'No Image';
+                }
+                if (!empty($row['payment_image'])) {
+                    $tempRow['payment_image'] = "<a data-lightbox='category' href='" . $row['payment_image'] . "' data-caption='" . $row['payment_image'] . "'><img src='" . $row['payment_image'] . "' title='" . $row['payment_image'] . "' height='50' /></a>";
+                } else {
+                    $tempRow['payment_image'] = 'No Image';
+                }
+                if ($row['status'] == 0) {
+                    $tempRow['status'] = "<p class='label label-default'>Wait For Confirmation</p>";
+                } elseif ($row['status'] == 1) {
+                    $tempRow['status'] = "<p class='label label-success'>Confirmed</p>";
+                } elseif ($row['status'] == 2) {
+                    $tempRow['status'] = "<p class='label label-danger'>Cancelled</p>";
+                } elseif ($row['status'] == 3) {
+                    $tempRow['status'] = "<p class='label label-primary'>Shipped</p>";
+                } elseif ($row['status'] == 4) {
+                    $tempRow['status'] = "<p class='label label-info'>Delivered</p>";
+                } 
+                elseif ($row['status'] == 5) {
+                    $tempRow['status'] = "<p class='label label-warning'>COD Not-Verified</p>";
+                } else {
+                    $tempRow['status'] = "<p class='label label-default'>Unknown</p>";
+                }
+                $tempRow['live_tracking'] = $row['live_tracking'];
+                $tempRow['operate'] = $operate;
+                $rows[] = $tempRow;
+            }
+            $bulkData['rows'] = $rows;
+            print_r(json_encode($bulkData));
+        }
 $db->disconnect();
 
