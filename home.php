@@ -79,19 +79,13 @@ include "header.php";
                     </div>
                 </div>
                 <div class="col-lg-4 col-xs-6">
-                    <div class="small-box bg-green">
+                    <div class="small-box bg-red">
                         <div class="inner">
                             <h3>
                                 <?php
                                 $staffID = $_SESSION['id'];
                                 $date = date('Y-m-d');
-                                $sql = "SELECT SUM(p.measurement) AS total_grams 
-                                        FROM orders o 
-                                        JOIN users u ON u.id = o.user_id 
-                                        JOIN products p ON p.id = o.product_id 
-                                        WHERE u.staff_id = '$staffID' 
-                                        AND DATE(o.ordered_date) = '$date' 
-                                        AND o.status != 2";
+                                $sql = "SELECT SUM(p.measurement) AS total_grams FROM orders o JOIN users u ON u.id = o.user_id JOIN products p ON p.id = o.product_id WHERE u.staff_id = '$staffID' AND DATE(o.ordered_date) = '$date' AND o.status != 2";
                                 $db->sql($sql);
                                 $res = $db->getResult();
                                 $total_grams = isset($res[0]['total_grams']) ? $res[0]['total_grams'] : 0;
