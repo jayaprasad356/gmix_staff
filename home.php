@@ -78,6 +78,32 @@ include "header.php";
                         <a href="orders.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
+                <div class="col-lg-4 col-xs-6">
+                    <div class="small-box bg-green">
+                        <div class="inner">
+                            <h3>
+                                <?php
+                                $staffID = $_SESSION['id'];
+                                $date = date('Y-m-d');
+                                $sql = "SELECT SUM(p.measurement) AS total_grams 
+                                        FROM orders o 
+                                        JOIN users u ON u.id = o.user_id 
+                                        JOIN products p ON p.id = o.product_id 
+                                        WHERE u.staff_id = '$staffID' 
+                                        AND DATE(o.ordered_date) = '$date' 
+                                        AND o.status != 2";
+                                $db->sql($sql);
+                                $res = $db->getResult();
+                                $total_grams = isset($res[0]['total_grams']) ? $res[0]['total_grams'] : 0;
+                                $total_kg = $total_grams / 1000;
+                                echo number_format($total_kg, 2) . ' kg';
+                                ?>
+                            </h3>
+                            <p>Today Quantity</p>
+                        </div>
+                        <a href="orders.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
              </div>
         </section>
     </div>
