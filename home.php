@@ -79,7 +79,7 @@ include "header.php";
                     </div>
                 </div>
                 <div class="col-lg-4 col-xs-6">
-                    <div class="small-box bg-red">
+                    <div class="small-box bg-light-blue">
                         <div class="inner">
                             <h3>
                                 <?php
