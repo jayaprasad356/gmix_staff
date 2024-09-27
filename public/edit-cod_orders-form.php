@@ -16,7 +16,6 @@ $attempt1_disabled = '';
 $status = 5; // Default status
 $attempt1 = '';
 
-
 if (isset($_POST['btnEdit'])) {
     $attempt1 = isset($_POST['attempt1']) ? $db->escapeString($_POST['attempt1']) : '';
     $error = array();
@@ -31,15 +30,14 @@ if (isset($_POST['btnEdit'])) {
     } else {
         $ordered_date = $order[0]['ordered_date'];
         $today = date('Y-m-d');
-        $next_day = date('Y-m-d', strtotime($ordered_date . ' +1 day'));
 
         // Determine field states and status
         if ($today === $ordered_date) {
-            // If today is the ordered_date, disable both attempt1 and attempt2
+            // If today is the ordered_date, disable attempt1
             $attempt1_disabled = 'disabled';
-            $error['update_languages'] = "<span class='label label-danger'>Cannot update attempts today. Fields are disabled.</span>";
-        } elseif ($today === $next_day) {
-            // If today is the next day, disable attempt2 and enable attempt1
+            $error['update_languages'] = "<span class='label label-danger'>Cannot update attempt1 today. Field is disabled.</span>";
+        } else {
+            // If today is not the ordered_date, enable attempt1 and update it
             $attempt1_disabled = '';
             $update_message = '';
 
@@ -55,11 +53,9 @@ if (isset($_POST['btnEdit'])) {
             }
 
             $error['update_languages'] = $update_message;
-        } 
-           
         }
     }
-
+}
 
 $sql_query = "SELECT * FROM orders WHERE id = $ID";
 $db->sql($sql_query);
@@ -121,13 +117,12 @@ if (isset($_POST['btnCancel'])) { ?>
 
         // Convert ordered_date to YYYY-MM-DD format for comparison
         var orderedDateFormatted = new Date(orderedDate).toISOString().split('T')[0];
-        var nextDay = new Date(new Date(orderedDateFormatted).getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]; // Next day
 
         if (today === orderedDateFormatted) {
-            // Disable both fields if ordered_date is today
+            // Disable attempt1 if ordered_date is today
             attempt1Field.disabled = true;
-        } else if (today === nextDay) {
-            // Enable attempt1 and disable attempt2 if today is the day after ordered_date
+        } else {
+            // Enable attempt1 if ordered_date is not today
             attempt1Field.disabled = false;
         }
     });
