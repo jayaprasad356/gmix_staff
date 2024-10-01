@@ -49,36 +49,6 @@ include "header.php";
         <section class="content">
             <div class="row">
                 <div class="col-lg-4 col-xs-6">
-                    <div class="small-box bg-green">
-                        <div class="inner">
-                            <h3>
-                                <?php
-                                $staffID = $_SESSION['id'];
-                                $date = date('Y-m-d');
-                                $sql = "SELECT COUNT(o.id) AS count FROM orders o JOIN users u ON u.id = o.user_id WHERE u.staff_id = '$staffID' AND DATE(o.ordered_date) = '$date' AND o.status != 2";
-                                $db->sql($sql);
-                                $res = $db->getResult();
-                                $count = isset($res[0]['count']) ? $res[0]['count'] : 0;
-                                echo $count;
-                                ?>
-                            </h3>
-                            <p>Today Orders</p>
-                        </div>
-                        <a href="orders.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-xs-6">
-                    <div class="small-box bg-purple">
-                        <div class="inner">
-                            <h3><?php 
-                             ?>10</h3>
-                            <p>Today Targets</p>
-                        </div>
-                        <div class="icon"><i class="fa fa-users"></i></div>
-                        <a href="orders.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-xs-6">
                     <div class="small-box bg-light-blue">
                         <div class="inner">
                             <h3>
@@ -94,6 +64,29 @@ include "header.php";
                                 ?>
                             </h3>
                             <p>Today Quantity</p>
+                        </div>
+                        <a href="orders.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-xs-6">
+                    <div class="small-box bg-green">
+                        <div class="inner">
+                            <h3>
+                                <?php
+                                $staffID = $_SESSION['id'];
+                                $date = date('Y-m-d');
+                                // Calculate the start and end of the week (Sunday to Monday)
+                                $startOfWeek = date('Y-m-d', strtotime('last Sunday', strtotime($date)));
+                                $endOfWeek = date('Y-m-d', strtotime('next Monday', strtotime($date)));
+                                $sql = "SELECT SUM(p.measurement) AS total_grams FROM orders o JOIN users u ON u.id = o.user_id JOIN products p ON p.id = o.product_id WHERE u.staff_id = '$staffID' AND DATE(o.ordered_date) BETWEEN '$startOfWeek' AND '$endOfWeek' AND o.status != 2";
+                                $db->sql($sql);
+                                $res = $db->getResult();
+                                $total_grams = isset($res[0]['total_grams']) ? $res[0]['total_grams'] : 0;
+                                $total_kg = $total_grams / 1000;
+                                echo number_format($total_kg, 2) . ' kg';
+                                ?>
+                            </h3>
+                            <p>This week Quantity</p>
                         </div>
                         <a href="orders.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
                     </div>

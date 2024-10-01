@@ -188,9 +188,9 @@ $fn = new custom_functions;
                     </a>
                 </li>
                 <li class="treeview">
-                    <a href="create_payment_links.php">
+                    <a href="payment_links.php">
                     <i class="fa fa-money"></i>
-                    <span>Create Payment Links</span>
+                    <span>Payment Links</span>
                     </a>
                 </li>
                 <li class="treeview">

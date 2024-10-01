@@ -652,5 +652,76 @@ $db->connect();
             $bulkData['rows'] = $rows;
             print_r(json_encode($bulkData));
         }
+
+        if (isset($_GET['table']) && $_GET['table'] == 'payment_links') {
+
+            $offset = 0;
+            $limit = 10;
+            $where = '';
+            $sort = 'id';
+            $order = 'DESC';
+        
+            // Handle pagination, sorting, and filtering parameters
+            if (isset($_GET['offset'])) {
+                $offset = $db->escapeString($_GET['offset']);
+            }
+            if (isset($_GET['limit'])) {
+                $limit = $db->escapeString($_GET['limit']);
+            }
+            if (isset($_GET['sort'])) {
+                $sort = $db->escapeString($_GET['sort']);
+            }
+            if (isset($_GET['order'])) {
+                $order = $db->escapeString($_GET['order']);
+            }
+        
+            // Handle search functionality
+            if (isset($_GET['search']) && !empty($_GET['search'])) {
+                $search = $db->escapeString($fn->xss_clean($_GET['search']));
+                $where .= " AND (u.mobile LIKE '%" . $search . "%') ";
+            }
+        
+            // SQL join to link payment_links with users table
+            $join = "LEFT JOIN `users` u ON l.user_id = u.id WHERE 1=1 " . $where;
+        
+            // Get the total number of records
+            $sql = "SELECT COUNT(l.id) AS total FROM `payment_links` l " . $join;
+            $db->sql($sql);
+            $res = $db->getResult();
+            foreach ($res as $row) {
+                $total = $row['total'];
+            }
+        
+            // Get the payment links data with user information
+            $sql = "SELECT l.id AS id, l.*, u.name, u.mobile as user_mobile FROM `payment_links` l " . $join . " ORDER BY $sort $order LIMIT $offset, $limit";
+            $db->sql($sql);
+            $res = $db->getResult();
+        
+            // Prepare the response data
+            $bulkData = array();
+            $bulkData['total'] = $total;
+        
+            $rows = array();
+            foreach ($res as $row) {
+                $tempRow = array();
+                $tempRow['id'] = $row['id'];
+                $tempRow['user_mobile'] = $row['user_mobile'];
+                $tempRow['payment_link'] = $row['payment_link'];
+        
+                // Add the "Copy" button to the table
+                $tempRow['copy_payment_links'] = '<button class="btn btn-primary copy-btn" data-link="' . $row['payment_link'] . '">Copy</button>';
+        
+                // Example operation buttons (Edit/Delete), uncomment if needed
+                // $tempRow['operate'] = ' <a href="edit-users.php?id=' . $row['id'] . '"><i class="fa fa-edit"></i>Edit</a> ';
+                // $tempRow['operate'] .= ' <a class="text text-danger" href="delete-users.php?id=' . $row['id'] . '"><i class="fa fa-trash"></i>Delete</a>';
+        
+                $rows[] = $tempRow;
+            }
+        
+            // Add rows to the bulk data and encode it to JSON format
+            $bulkData['rows'] = $rows;
+            echo json_encode($bulkData);
+        }
+        
 $db->disconnect();
 
