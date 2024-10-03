@@ -122,13 +122,20 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
     // Live tracking URL
     $live_tracking = 'https://gmix.shiprocket.co/tracking/';
 
+    if (!isset($_SESSION['id'])) {
+        // Redirect to login page or handle unauthorized access
+    }
+
     // Current date for ordered_date
     $ordered_date = date('Y-m-d H:i:s');
     $created_at = date('Y-m-d H:i:s');
     $status = ($payment_mode == 'COD') ? 5 : 0; 
+
+
+    $staffID = $_SESSION['id'];
     // Insert the order into the orders table
-    $sql_query = "INSERT INTO orders (user_id, address_id, product_id, payment_mode, delivery_charges, total_price, live_tracking, ordered_date, price, created_at, chat_conversation, payment_image, status,quantity)
-    VALUES ('$user_id', '$address_id', '$product_id', '$payment_mode', '$delivery_charges', '$total_price', '$live_tracking', '$ordered_date', '$price', '$created_at', '$chat_conversation_full_path', '$payment_image_full_path', '$status',1)";
+    $sql_query = "INSERT INTO orders (user_id, address_id, product_id, payment_mode, delivery_charges, total_price, live_tracking, ordered_date, price, created_at, chat_conversation, payment_image, status,quantity,staff_id)
+    VALUES ('$user_id', '$address_id', '$product_id', '$payment_mode', '$delivery_charges', '$total_price', '$live_tracking', '$ordered_date', '$price', '$created_at', '$chat_conversation_full_path', '$payment_image_full_path', '$status',1,'$staffID')";
     $db->sql($sql_query);
     $result = $db->getResult();
     if (!empty($result)) {

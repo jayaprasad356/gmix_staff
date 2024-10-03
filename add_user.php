@@ -20,9 +20,9 @@ if (isset($_POST['mobile'])) {
             // Mobile number already exists in users table
             echo "Mobile number already registered";
         } else {
-            $staffID = $_SESSION['id'];
+           // $staffID = $_SESSION['id'];
             // Mobile number does not exist in users table, insert it
-            $insert_user_query = "INSERT INTO users (mobile, staff_id, created_at) VALUES ('$mobile', '$staffID', '$created_at')";
+            $insert_user_query = "INSERT INTO users (mobile,created_at) VALUES ('$mobile','$created_at')";
             if ($db->sql($insert_user_query)) {
                 echo "Mobile number inserted successfully";
             } else {

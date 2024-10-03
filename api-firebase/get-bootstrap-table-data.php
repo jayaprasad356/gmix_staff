@@ -74,7 +74,9 @@ $db->connect();
         
             if (isset($_GET['search']) && !empty($_GET['search'])) {
                 $search = $db->escapeString($fn->xss_clean($_GET['search']));
-                $where .= " AND (mobile LIKE '%" . $search . "%') ";
+                $where .= " WHERE mobile LIKE '%" . $search . "%' ";
+            } else {
+                $where = " WHERE 1 ";
             }
             if (isset($_GET['sort'])) {
                 $sort = $db->escapeString($_GET['sort']);
@@ -83,17 +85,15 @@ $db->connect();
                 $order = $db->escapeString($_GET['order']);
             }
         
-            $sql = "SELECT COUNT(*) as total FROM `users` WHERE staff_id = 0" . $where;
+            $sql = "SELECT COUNT(*) as total FROM `users`" . $where;
             $db->sql($sql);
             $res = $db->getResult();
             $total = $res[0]['total'];
            
-            $sql = "SELECT * FROM users WHERE staff_id = 0" . $where . " ORDER BY " . $sort . " " . $order . " LIMIT " . $offset . ", " . $limit;
+            $sql = "SELECT * FROM users" . $where . " ORDER BY " . $sort . " " . $order . " LIMIT " . $offset . ", " . $limit;
             $db->sql($sql);
             $res = $db->getResult();
 
-              
-        
             $bulkData = array();
             $bulkData['total'] = $total;
             
@@ -105,7 +105,12 @@ $db->connect();
                 
                // $operate = ' <a href="edit-users.php?id=' . $row['id'] . '"><i class="fa fa-edit"></i>Edit</a>';
                 $operate = ' <a class="text text-danger" href="delete-users.php?id=' . $row['id'] . '"><i class="fa fa-trash"></i>Delete</a>';
-                $take = '<a href="assign-users.php?id=' . $row['id'] . '" class="btn btn-success">Take</a>';
+                if ($row['staff_id'] == 0) {
+                    $take = '<a href="assign-users.php?id=' . $row['id'] . '" class="btn btn-success">Take</a>';
+                } else {
+                    $take = '<button class="btn btn-secondary" disabled>Take</button>';
+                }
+                //$take = '<a href="assign-users.php?id=' . $row['id'] . '" class="btn btn-success">Take</a>';
                 $tempRow['id'] = $row['id'];
                 $tempRow['mobile'] = $row['mobile'];
                 $tempRow['take'] = $take;
@@ -116,7 +121,7 @@ $db->connect();
             print_r(json_encode($bulkData));
         }
         //plan
-        if (isset($_GET['table']) && $_GET['table'] == 'my_customers') {
+        if (isset($_GET['table']) && $_GET['table'] == 'all_users') {
 
             $offset = 0;
             $limit = 10;
@@ -142,15 +147,13 @@ $db->connect();
             if (isset($_GET['order'])){
             $order = $db->escapeString($_GET['order']);
             }
-            if (!isset($_SESSION['id'])) {
-            // Redirect to login page or handle unauthorized access
-            }
-            $sql = "SELECT COUNT(`id`) as total FROM `users` WHERE staff_id = {$_SESSION['id']} " . $where;
+          
+            $sql = "SELECT COUNT(*) as total FROM `users`" . $where;
             $db->sql($sql);
             $res = $db->getResult();
             $total = $res[0]['total'];
-
-            $sql = "SELECT id, mobile FROM users WHERE staff_id = {$_SESSION['id']} " . $where . " ORDER BY " . $sort . " " . $order . " LIMIT " . $offset . ", " . $limit;
+           
+            $sql = "SELECT * FROM users" . $where . " ORDER BY " . $sort . " " . $order . " LIMIT " . $offset . ", " . $limit;
             $db->sql($sql);
             $res = $db->getResult();
 
@@ -215,7 +218,7 @@ $db->connect();
                     INNER JOIN users ON orders.user_id = users.id
                     INNER JOIN products ON orders.product_id = products.id
                     INNER JOIN addresses ON orders.address_id = addresses.id
-                    WHERE users.staff_id = {$_SESSION['id']}" . $where;
+                    WHERE orders.staff_id = {$_SESSION['id']}" . $where;
             $db->sql($sql);
             $res = $db->getResult();
             $total = $res[0]['total'];
@@ -230,7 +233,7 @@ $db->connect();
                     INNER JOIN users ON orders.user_id = users.id
                     INNER JOIN products ON orders.product_id = products.id
                     INNER JOIN addresses ON orders.address_id = addresses.id
-                    WHERE users.staff_id = {$_SESSION['id']}" . $where . "
+                    WHERE orders.staff_id = {$_SESSION['id']}" . $where . "
                     ORDER BY " . $sort . " " . $order . " LIMIT " . $offset . ", " . $limit;
             $db->sql($sql);
             $res = $db->getResult();
@@ -325,7 +328,7 @@ $db->connect();
                     LEFT JOIN users ON orders.user_id = users.id
                     LEFT JOIN products ON orders.product_id = products.id
                     LEFT JOIN addresses ON orders.address_id = addresses.id
-                    WHERE users.staff_id = {$_SESSION['id']}" . $where . " AND orders.status = 5";
+                    WHERE orders.staff_id = {$_SESSION['id']}" . $where . " AND orders.status = 5";
         
             $db->sql($sql);
             $res = $db->getResult();
@@ -340,7 +343,7 @@ $db->connect();
                     LEFT JOIN users ON orders.user_id = users.id
                     LEFT JOIN products ON orders.product_id = products.id
                     LEFT JOIN addresses ON orders.address_id = addresses.id
-                    WHERE users.staff_id = {$_SESSION['id']}" . $where . " AND orders.status = 5
+                    WHERE orders.staff_id = {$_SESSION['id']}" . $where . " AND orders.status = 5
                     ORDER BY " . $sort . " " . $order . " LIMIT " . $offset . ", " . $limit;
             $db->sql($sql);
             $res = $db->getResult();
@@ -417,7 +420,7 @@ $db->connect();
                 $where .= " AND (l.id LIKE '%" . $search . "%' OR u.mobile LIKE '%" . $search . "%')";
             }
         
-            $join = "LEFT JOIN `users` u ON l.user_id = u.id WHERE l.id IS NOT NULL AND u.staff_id = {$_SESSION['id']} " . $where;
+            $join = "LEFT JOIN `users` u ON l.user_id = u.id WHERE l.id IS NOT NULL ". $where;
         
             $sql = "SELECT COUNT(l.id) AS total FROM `addresses` l " . $join;
             $db->sql($sql);
