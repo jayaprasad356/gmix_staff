@@ -91,6 +91,36 @@ include "header.php";
                         <a href="orders.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
+                <div class="col-lg-4 col-xs-6">
+                    <div class="small-box bg-red">
+                        <div class="inner">
+                            <h3><?php
+                             $sql = "SELECT COUNT(id) AS count FROM orders WHERE staff_id = '$staffID' AND DATE(ordered_date) = '$date' AND payment_mode = 'COD' AND status != 2";
+                             $db->sql($sql);
+                             $res = $db->getResult();
+                             $count = $res[0]['count'];
+                             echo $count;
+                              ?></h3>
+                            <p>Today COD Orders</p>
+                        </div>
+                        <a href="orders.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-xs-6">
+                    <div class="small-box bg-orange">
+                        <div class="inner">
+                            <h3><?php
+                             $sql = "SELECT COUNT(id) AS count FROM orders WHERE staff_id = '$staffID' AND DATE(ordered_date) = '$date' AND payment_mode = 'Prepaid' AND status != 2";
+                             $db->sql($sql);
+                             $res = $db->getResult();
+                             $count = $res[0]['count'];
+                             echo $count;
+                              ?></h3>
+                            <p>Today Prepaid Orders</p>
+                        </div>
+                        <a href="orders.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
              </div>
         </section>
     </div>
