@@ -501,7 +501,7 @@ $db->connect();
                     FROM tickets
                     LEFT JOIN orders ON tickets.order_id = orders.id
                     LEFT JOIN users ON orders.user_id = users.id
-                    WHERE users.staff_id = {$_SESSION['id']}" . $where;
+                    WHERE orders.staff_id = {$_SESSION['id']}" . $where;
 
             $db->sql($sql);
             $res = $db->getResult();
@@ -511,7 +511,7 @@ $db->connect();
                     FROM tickets
                     LEFT JOIN orders ON tickets.order_id = orders.id
                     LEFT JOIN users ON orders.user_id = users.id
-                    WHERE users.staff_id = {$_SESSION['id']}" . $where . "
+                    WHERE orders.staff_id = {$_SESSION['id']}" . $where . "
                     ORDER BY " . $sort . " " . $order . " LIMIT " . $offset . ", " . $limit;
             $db->sql($sql);
             $res = $db->getResult();
@@ -584,7 +584,7 @@ $db->connect();
                     INNER JOIN users ON orders.user_id = users.id
                     INNER JOIN products ON orders.product_id = products.id
                     INNER JOIN addresses ON orders.address_id = addresses.id
-                    WHERE users.staff_id = {$_SESSION['id']}" . $where;
+                    WHERE orders.staff_id = {$_SESSION['id']}" . $where;
             $db->sql($sql);
             $res = $db->getResult();
             $total = $res[0]['total'];
@@ -599,7 +599,7 @@ $db->connect();
                     INNER JOIN users ON orders.user_id = users.id
                     INNER JOIN products ON orders.product_id = products.id
                     INNER JOIN addresses ON orders.address_id = addresses.id
-                    WHERE users.staff_id = {$_SESSION['id']}" . $where . "
+                    WHERE orders.staff_id = {$_SESSION['id']}" . $where . "
                     ORDER BY " . $sort . " " . $order . " LIMIT " . $offset . ", " . $limit;
             $db->sql($sql);
             $res = $db->getResult();
