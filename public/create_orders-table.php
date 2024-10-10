@@ -91,7 +91,7 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
     }
 
     // Fetch product price
-    $product_query = "SELECT price FROM products WHERE id = '$product_id'";
+    $product_query = "SELECT price,incentives FROM products WHERE id = '$product_id'";
     $db->sql($product_query);
     $product = $db->getResult();
 
@@ -102,6 +102,8 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
     }
 
     $price = $product[0]['price'];
+    $incentives = $product[0]['incentives'];
+
     $delivery_charges = 0;
 
     if ($payment_mode == 'Prepaid') {
@@ -129,6 +131,7 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
     // Current date for ordered_date
     $ordered_date = date('Y-m-d H:i:s');
     $created_at = date('Y-m-d H:i:s');
+    $datetime = date('Y-m-d H:i:s');
     $status = ($payment_mode == 'COD') ? 5 : 0; 
 
 
@@ -137,13 +140,24 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
     $sql_query = "INSERT INTO orders (user_id, address_id, product_id, payment_mode, delivery_charges, total_price, live_tracking, ordered_date, price, created_at, chat_conversation, payment_image, status,quantity,staff_id)
     VALUES ('$user_id', '$address_id', '$product_id', '$payment_mode', '$delivery_charges', '$total_price', '$live_tracking', '$ordered_date', '$price', '$created_at', '$chat_conversation_full_path', '$payment_image_full_path', '$status',1,'$staffID')";
     $db->sql($sql_query);
+
+    // Check for result
     $result = $db->getResult();
     if (!empty($result)) {
         $result = 0;
     } else {
         $result = 1;
     }
+
     if ($result == 1) {
+        // Update staff incentives
+        $update_incentives_query = "UPDATE staffs SET incentives = incentives + $incentives WHERE id = '$staffID'";
+        $db->sql($update_incentives_query);
+
+        $update_transactions_query = "INSERT INTO staff_transactions (staff_id, type, amount, datetime)
+        VALUES ('$staffID', 'incentives', '$incentives', '$datetime')";  
+        $db->sql($update_transactions_query);
+
         header("Location: create_orders.php?status=success");
         exit();
     } else {

@@ -217,6 +217,18 @@ $fn = new custom_functions;
                         <span>Rise Ticket</span>
                     </a>
                 </li>
+                <li class="treeview">
+                    <a href="bank_details.php">
+                    <i class="fa fa-bank"></i>
+                        <span>Bank Details</span>
+                    </a>
+                </li>
+                <li class="treeview">
+                    <a href="withdrawals.php">
+                    <i class="fa fa-money"></i>
+                        <span>Withdrawals</span>
+                    </a>
+                </li>
             </section>
             <!-- /.sidebar -->
         </aside>
