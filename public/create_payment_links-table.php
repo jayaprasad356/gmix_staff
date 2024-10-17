@@ -82,7 +82,7 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
     $data = [
         'purpose' => "{$user_id}-{$address_id}-{$product_id}-{$quantity}-{$staff_id}",
         'buyer_name' => $buyer_name,
-        'amount' => 10,
+        'amount' => $amount,
         'email' => 'default@example.com', // Set default email
         'phone' => $phone
     ];
