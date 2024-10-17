@@ -187,12 +187,12 @@ $fn = new custom_functions;
                     <span>Create Orders</span>
                     </a>
                 </li>
-                <!--<li class="treeview">
+                <li class="treeview">
                     <a href="payment_links.php">
                     <i class="fa fa-money"></i>
                     <span>Payment Links</span>
                     </a>
-                </li>-->
+                </li>
                 <li class="treeview">
                     <a href="orders.php">
                     <i class="fa fa-shopping-cart"></i>

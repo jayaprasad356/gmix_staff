@@ -18,17 +18,17 @@ class Database
 
 
      //live
-   // private $db_host = "localhost";  // Change as required
-   // private $db_user = "u743445510_gmix";  // Change as required
-   // private $db_pass = "Gmix@2024";  // Change as required
-  // private $db_name = "u743445510_gmix"; 
+   private $db_host = "localhost";  // Change as required
+   private $db_user = "u743445510_gmix";  // Change as required
+   private $db_pass = "Gmix@2024";  // Change as required
+  private $db_name = "u743445510_gmix"; 
 
 
       //demo
-      private $db_host = "localhost";  // Change as required
-      private $db_user = "u743445510_test_gmix";  // Change as required
-      private $db_pass = "Testgmix@2024";  // Change as required
-      private $db_name = "u743445510_test_gmix"; 
+    //   private $db_host = "localhost";  // Change as required
+    //   private $db_user = "root";  // Change as required
+    //   private $db_pass = "";  // Change as required
+    //   private $db_name = "gmix"; 
 
     private $con = false; // Check to see if the connection is active
     private $myconn = ""; // This will be our mysqli object

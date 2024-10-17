@@ -9,16 +9,16 @@ include_once('includes/custom-functions.php');
 $fn = new custom_functions;
 
 // Demo
-$host = 'localhost';
-$username = 'u743445510_test_gmix';
-$password = 'Testgmix@2024';
-$database = 'u743445510_test_gmix';
+// $host = 'localhost';
+// $username = 'root';
+// $password = '';
+// $database = 'gmix';
 
 // live
-//$host = 'localhost';
-//$username = 'u743445510_gmix';
-//$password = 'Gmix@2024';
-//$database = 'u743445510_gmix';
+$host = 'localhost';
+$username = 'u743445510_gmix';
+$password = 'Gmix@2024';
+$database = 'u743445510_gmix';
 
 // Create a new mysqli object
 $db = new mysqli($host, $username, $password, $database);

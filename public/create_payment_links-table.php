@@ -72,16 +72,17 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
     $buyer_name = $address_info[0]['first_name'];
     $phone = $address_info[0]['mobile'];
     $amount = $product[0]['price'];
-    $quantity = $product[0]['quantity']; 
+    $quantity = 1;
+    $staff_id = $_SESSION['id'];
 
     // API URL
     $api_url = "https://gateway.graymatterworks.com/api/create_payment_request.php";
     
     // Prepare data for API call
     $data = [
-        'purpose' => "{$user_id}-{$address_id}-{$product_id}-{$quantity}",
+        'purpose' => "{$user_id}-{$address_id}-{$product_id}-{$quantity}-{$staff_id}",
         'buyer_name' => $buyer_name,
-        'amount' => $amount,
+        'amount' => 10,
         'email' => 'default@example.com', // Set default email
         'phone' => $phone
     ];
