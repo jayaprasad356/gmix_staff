@@ -709,6 +709,7 @@ $db->connect();
                 $tempRow = array();
                 $tempRow['id'] = $row['id'];
                 $tempRow['user_mobile'] = $row['user_mobile'];
+                $tempRow['user_name'] = $row['user_name'];
                 $tempRow['payment_link'] = $row['payment_link'];
         
                 // Add the "Copy" button to the table

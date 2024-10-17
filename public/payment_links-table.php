@@ -19,6 +19,7 @@
                             <thead>
                                 <tr>
                                     <th data-field="id" data-sortable="true">ID</th>
+                                    <th data-field="user_name" data-sortable="true">User Name</th>
                                     <th data-field="user_mobile" data-sortable="true">User Mobile</th>
                                     <th data-field="payment_link" data-sortable="true">Payment Link</th>
                                     <th data-field="copy_payment_links" data-sortable="false">Copy</th>
