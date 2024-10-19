@@ -121,6 +121,22 @@ include "header.php";
                         <a href="orders.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
+              
+                <div class="col-lg-4 col-xs-6">
+                    <div class="small-box bg-purple">
+                        <div class="inner">
+                            <h3><?php
+                                $sql = "SELECT SUM(incentives) AS incentives FROM staffs WHERE id = '$staffID'";
+                                $db->sql($sql);
+                                $res = $db->getResult();
+                                $totalIncentives = $res[0]['incentives'] ? "₹" . $res[0]['incentives'] : "₹0"; // Ensure that we handle cases with no incentives
+                                echo $totalIncentives;
+                            ?></h3>
+                            <p>Total Incentives Count</p> 
+                        </div>
+                        <a href="orders.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
              </div>
         </section>
     </div>
