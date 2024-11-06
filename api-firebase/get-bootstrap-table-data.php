@@ -279,6 +279,9 @@ $db->connect();
                 } 
                 elseif ($row['status'] == 5) {
                     $tempRow['status'] = "<p class='label label-warning'>COD Not-Verified</p>";
+                } 
+                elseif ($row['status'] == 6) {
+                    $tempRow['status'] = "<p class='label label-warning'>Payment Not-Verified</p>";
                 } else {
                     $tempRow['status'] = "<p class='label label-default'>Unknown</p>";
                 }
@@ -389,7 +392,10 @@ $db->connect();
                     $tempRow['status'] = "<p class='label label-info'>Delivered</p>";
                 } elseif ($row['status'] == 5) {
                     $tempRow['status'] = "<p class='label label-warning'>COD Not-Verified</p>";
-                } else {
+                }
+                elseif ($row['status'] == 6) {
+                    $tempRow['status'] = "<p class='label label-warning'>Payment Not-Verified</p>";
+                }  else {
                     $tempRow['status'] = "<p class='label label-default'>Unknown</p>";
                 }
                 $tempRow['live_tracking'] = $row['live_tracking'];
@@ -645,6 +651,9 @@ $db->connect();
                 } 
                 elseif ($row['status'] == 5) {
                     $tempRow['status'] = "<p class='label label-warning'>COD Not-Verified</p>";
+                } 
+                elseif ($row['status'] == 6) {
+                    $tempRow['status'] = "<p class='label label-warning'>Payment Not-Verified</p>";
                 } else {
                     $tempRow['status'] = "<p class='label label-default'>Unknown</p>";
                 }

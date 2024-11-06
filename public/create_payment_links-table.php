@@ -57,6 +57,8 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
         exit;
     }
 
+    $price = $product[0]['price'];
+
     // Fetch additional information required for API
     $address_query = "SELECT first_name, mobile FROM addresses WHERE id = '$address_id'";
     $db->sql($address_query);
@@ -99,6 +101,42 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
     // Decode the response
     $response_data = json_decode($response, true);
 
+   // If 'others' payment option is selected, handle image upload and order insertion
+   if (isset($_POST['payment_option']) && $_POST['payment_option'] === 'others') {
+    if (isset($_FILES['payment_image']) && $_FILES['payment_image']['size'] > 0 && $_FILES['payment_image']['error'] == 0) {
+        $extension = pathinfo($_FILES["payment_image"]["name"], PATHINFO_EXTENSION);
+        $result = $fn->validate_image($_FILES["payment_image"]);
+        $target_path = 'upload/images/';
+        $payment_image = microtime(true) . '.' . strtolower($extension);
+        $payment_image_full_path = $target_path . $payment_image;
+
+        if (!move_uploaded_file($_FILES["payment_image"]["tmp_name"], $payment_image_full_path)) {
+            $_SESSION['error_message'] = "Cannot upload payment image.";
+            header("Location: create_payment_links.php");
+            exit();
+        }
+        
+        $staffID = $_SESSION['id'];
+        $ordered_date = date('Y-m-d H:i:s');
+        $total_price = $price;
+        $live_tracking = 'https://gmix.shiprocket.co/tracking/';
+        $status = '6';
+
+        $sql_query = "INSERT INTO orders (user_id, address_id, product_id, payment_mode, delivery_charges, total_price, live_tracking, ordered_date, price, created_at, payment_image, status, quantity, staff_id)
+                      VALUES ('$user_id', '$address_id', '$product_id', 'Prepaid', '0', '$total_price', '$live_tracking', '$ordered_date', '$price', NOW(), '$payment_image_full_path', '$status', 1, '$staffID')";
+        $db->sql($sql_query);
+
+        $_SESSION['success_message'] = "Order placed successfully with uploaded payment image!";
+        header("Location: orders.php?status=success");
+        exit();
+    } else {
+        $_SESSION['error_message'] = "Please upload a payment image!";
+        header("Location: create_payment_links.php");
+        exit();
+    }
+}
+
+
     // Check if the API call was successful
     if (isset($response_data['longurl'])) {
         $payment_link = $response_data['longurl'];
@@ -117,8 +155,7 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
         header('Location: create_payment_links.php');
         exit;
     }
-    }
-
+}
     // End output buffering and flush
     ob_end_flush();
     ?>
@@ -181,9 +218,33 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
                                 </select>
                             </div>
                         </div>
-   
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Payment Option:</label>
+                            <div class="col-sm-8">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="payment_option" value="payment_link" checked> Payment Link
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="payment_option" value="others"> Others
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="upload-screenshot" style="display: none;">
+                            <label for="payment_image" class="col-sm-4 control-label">Upload Payment Screenshot:</label>
+                            <div class="col-sm-8">
+                                <input type="file" name="payment_image" id="payment_image" class="form-control">
+                            </div>
+                        </div>
+
+
                         <div class="box-footer">
-                           <button type="submit" class="btn btn-primary" name="btnAdd">Create Payment Links</button>
+                           <button type="submit" class="btn btn-primary" name="btnAdd" id="submitButton">Create Payment Links</button>
                            <input type="reset" class="btn-warning btn" value="Clear" />
                         </div>
                     </form>
@@ -198,6 +259,17 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
 
 <script>
     $(document).ready(function() {
+        // Toggle display based on selected payment option
+        $('input[name="payment_option"]').change(function() {
+            if ($(this).val() === 'others') {
+                $('#upload-screenshot').show();
+                $('#submitButton').text('Send for Verification');
+            } else {
+                $('#upload-screenshot').hide();
+                $('#submitButton').text('Create Payment Links');
+            }
+        });
+
         // Check if the URL contains the 'status=success' parameter
         if (window.location.href.indexOf('status=success') > -1) {
             // Remove the 'status' parameter from the URL after showing the message
