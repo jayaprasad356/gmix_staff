@@ -55,7 +55,7 @@ include "header.php";
                                 <?php
                                 $staffID = $_SESSION['id'];
                                 $date = date('Y-m-d');
-                                $sql = "SELECT SUM(p.measurement) AS total_grams FROM orders o JOIN users u ON u.id = o.user_id JOIN products p ON p.id = o.product_id WHERE o.staff_id = '$staffID' AND DATE(o.ordered_date) = '$date' AND o.status != 2";
+                                $sql = "SELECT SUM(p.measurement) AS total_grams FROM orders o JOIN users u ON u.id = o.user_id JOIN products p ON p.id = o.product_id WHERE o.staff_id = '$staffID' AND DATE(o.ordered_date) = '$date'  AND o.status NOT IN (2, 6)";
                                 $db->sql($sql);
                                 $res = $db->getResult();
                                 $total_grams = isset($res[0]['total_grams']) ? $res[0]['total_grams'] : 0;
@@ -78,7 +78,7 @@ include "header.php";
                                 // Calculate the start and end of the week (Sunday to Monday)
                                 $startOfWeek = date('Y-m-d', strtotime('last Sunday', strtotime($date)));
                                 $endOfWeek = date('Y-m-d', strtotime('next Monday', strtotime($date)));
-                                $sql = "SELECT SUM(p.measurement) AS total_grams FROM orders o JOIN users u ON u.id = o.user_id JOIN products p ON p.id = o.product_id WHERE o.staff_id = '$staffID' AND DATE(o.ordered_date) BETWEEN '$startOfWeek' AND '$endOfWeek' AND o.status != 2";
+                                $sql = "SELECT SUM(p.measurement) AS total_grams FROM orders o JOIN users u ON u.id = o.user_id JOIN products p ON p.id = o.product_id WHERE o.staff_id = '$staffID' AND DATE(o.ordered_date) BETWEEN '$startOfWeek' AND '$endOfWeek'  AND o.status NOT IN (2, 6)";
                                 $db->sql($sql);
                                 $res = $db->getResult();
                                 $total_grams = isset($res[0]['total_grams']) ? $res[0]['total_grams'] : 0;
@@ -110,7 +110,7 @@ include "header.php";
                     <div class="small-box bg-orange">
                         <div class="inner">
                             <h3><?php
-                             $sql = "SELECT COUNT(id) AS count FROM orders WHERE staff_id = '$staffID' AND DATE(ordered_date) = '$date' AND payment_mode = 'Prepaid' AND status != 2";
+                             $sql = "SELECT COUNT(id) AS count FROM orders WHERE staff_id = '$staffID' AND DATE(ordered_date) = '$date' AND payment_mode = 'Prepaid' AND status NOT IN (2, 6)";
                              $db->sql($sql);
                              $res = $db->getResult();
                              $count = $res[0]['count'];

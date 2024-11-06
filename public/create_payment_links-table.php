@@ -270,6 +270,19 @@ if (isset($_POST['mobile']) && isset($_POST['btnAdd'])) {
             }
         });
 
+        // Form submission validation
+        $('#customer_form').submit(function(event) {
+            var selectedOption = $('input[name="payment_option"]:checked').val();
+            var paymentImage = $('#payment_image').val();
+
+            if (selectedOption === 'others' && !paymentImage) {
+                // Prevent form submission
+                event.preventDefault();
+                // Display error message
+                alert('You need to upload a payment screenshot image for "Others" payment option.');
+            }
+        });
+
         // Check if the URL contains the 'status=success' parameter
         if (window.location.href.indexOf('status=success') > -1) {
             // Remove the 'status' parameter from the URL after showing the message
