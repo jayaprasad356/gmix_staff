@@ -286,6 +286,7 @@ $db->connect();
                     $tempRow['status'] = "<p class='label label-default'>Unknown</p>";
                 }
                 $tempRow['live_tracking'] = $row['live_tracking'];
+                $tempRow['copy_live_tracking'] = '<button class="btn btn-primary copy-btn" data-link="' . $row['live_tracking'] . '">Copy</button>';
                 $tempRow['operate'] = $operate;
                 $rows[] = $tempRow;
             }
@@ -657,7 +658,6 @@ $db->connect();
                 } else {
                     $tempRow['status'] = "<p class='label label-default'>Unknown</p>";
                 }
-                $tempRow['live_tracking'] = $row['live_tracking'];
                 $tempRow['operate'] = $operate;
                 $rows[] = $tempRow;
             }

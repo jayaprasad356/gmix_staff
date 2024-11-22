@@ -34,7 +34,9 @@
                                     <th data-field="measurement" data-sortable="true">Measurement</th>
                                     <th data-field="total_price" data-sortable="true">Total Price</th>
                                     <th data-field="est_delivery_date" data-sortable="true">Est Delivery Date</th>
+                                    <th data-field="live_tracking" data-sortable="true">Live Tracking</th>
                                     <th data-field="attempt1" data-sortable="true">Attempt 1</th>
+                                    <th data-field="copy_live_tracking" data-sortable="false">Copy</th>
                                 </tr>
                             </thead>
                         </table>
@@ -42,30 +44,37 @@
                 </div>
             </div>
             <div class="separator"> </div>
+            <script>
+        $(document).ready(function() {
+    // Event listener for the dynamically generated "Copy" buttons
+    $(document).on('click', '.copy-btn', function() {
+        // Get the payment link from the button's data-link attribute
+        var live_tracking = $(this).attr('data-link');
+
+        // Create a temporary input element to hold the payment link
+        var tempInput = document.createElement("input");
+        tempInput.value = live_tracking;
+        document.body.appendChild(tempInput);
+
+        // Select the text in the input and copy it to the clipboard
+        tempInput.select();
+        document.execCommand("copy");
+
+        // Remove the temporary input element
+        document.body.removeChild(tempInput);
+
+        // Optional: Show a confirmation message
+        alert("Live Tracking link copied: " + live_tracking);
+    });
+});
+
+    </script>
         </div>
     </section>
 
 <script>
     // Function to format the live_tracking column with a Copy button
-    function liveTrackingFormatter(value, row, index) {
-        return `<div class="input-group">
-                    <span class="input-group-btn">
-                        <button class="btn btn-success" onclick="copyToClipboard('${value}')">Copy</button>
-                    </span>
-                </div>`;
-    }
-
-    // Function to copy text to clipboard
-    function copyToClipboard(text) {
-        var tempInput = document.createElement('input');
-        tempInput.value = text;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-        document.execCommand('copy');
-        document.body.removeChild(tempInput);
-        alert('Copied to clipboard!');
-    }
-
+   
     $('#date_filter').on('change', function() {
         $('#users_table').bootstrapTable('refresh');
     });
